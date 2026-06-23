@@ -1,0 +1,10 @@
+import API from './axios';
+export const getProperties = (params) => API.get('/properties/', { params });
+export const getProperty = (id) => API.get(`/properties/${id}/`);
+export const createProperty = (data) => API.post('/properties/create/', data);
+export const updateProperty = (id, data) => API.put(`/properties/${id}/manage/`, data);
+export const deleteProperty = (id) => API.delete(`/properties/${id}/manage/`);
+export const getMyProperties = () => API.get('/properties/my-properties/');
+export const getCategories = () => API.get('/properties/categories/');
+export const getGovernorates = () => API.get('/properties/governorates/');
+export const getCities = (governorateId) => API.get('/properties/cities/', { params: { governorate: governorateId } });
