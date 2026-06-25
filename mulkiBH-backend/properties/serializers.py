@@ -81,26 +81,24 @@ class PropertyDetailSerializer(serializers.ModelSerializer):
 
 
 class PropertyCreateSerializer(serializers.ModelSerializer):
-    images = serializers.ListField(
-        child=serializers.ImageField(), write_only=True, required=False
-    )
-
     class Meta:
         model = Property
         fields = [
             'title_en', 'title_ar', 'description_en', 'description_ar',
             'category', 'governorate', 'city',
             'listing_type', 'price', 'area_sqm', 'bedrooms', 'bathrooms', 'floors',
-            'address_en', 'address_ar', 'images'
+            'address_en', 'address_ar',
         ]
 
     def create(self, validated_data):
-        images_data = validated_data.pop('images', [])
-        property = Property.objects.create(**validated_data)
-        for i, image in enumerate(images_data):
-            PropertyImage.objects.create(
-                property=property,
-                image=image,
-                is_main=(i == 0)
-            )
-        return property
+        request = self.context.get('request')
+        property_obj = Property.objects.create(**validated_data)
+        if request:
+            images = request.FILES.getlist('images')
+            for i, image in enumerate(images):
+                PropertyImage.objects.create(
+                    property=property_obj,
+                    image=image,
+                    is_main=(i == 0)
+                )
+        return property_obj

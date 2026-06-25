@@ -1,8 +1,8 @@
-from rest_framework import generics, status, filters
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAuthenticatedOrReadOnly
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from .models import Governorate, City, Category, Property
 from .serializers import (
     GovernorateSerializer, CitySerializer, CategorySerializer,
@@ -41,7 +41,6 @@ class PropertyListView(generics.ListAPIView):
         queryset = Property.objects.filter(status='available')
         params = self.request.query_params
 
-        # Filters
         if params.get('listing_type'):
             queryset = queryset.filter(listing_type=params['listing_type'])
         if params.get('category'):
@@ -56,16 +55,16 @@ class PropertyListView(generics.ListAPIView):
             queryset = queryset.filter(price__lte=params['price_max'])
         if params.get('bedrooms'):
             queryset = queryset.filter(bedrooms=params['bedrooms'])
-        if params.get('bathrooms'):
-            queryset = queryset.filter(bathrooms=params['bathrooms'])
         if params.get('search'):
+            from django.db.models import Q
             queryset = queryset.filter(
-                title_en__icontains=params['search']
-            ) | queryset.filter(
-                title_ar__icontains=params['search']
+                Q(title_en__icontains=params['search']) |
+                Q(title_ar__icontains=params['search'])
             )
-
         return queryset
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 
 class PropertyDetailView(generics.RetrieveAPIView):
@@ -84,6 +83,10 @@ class PropertyDetailView(generics.RetrieveAPIView):
 class PropertyCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PropertyCreateSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -96,10 +99,17 @@ class MyPropertiesView(generics.ListAPIView):
     def get_queryset(self):
         return Property.objects.filter(owner=self.request.user)
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 
 class PropertyUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = PropertyCreateSerializer
+    parser_classes = [MultiPartParser, FormParser, JSONParser]
 
     def get_queryset(self):
         return Property.objects.filter(owner=self.request.user)
+
+    def get_serializer_context(self):
+        return {'request': self.request}

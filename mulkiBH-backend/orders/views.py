@@ -7,7 +7,7 @@ from .serializers import (
     OrderCreateSerializer, OrderListSerializer,
     OrderDetailSerializer, OrderResponseSerializer
 )
-from notifications.utils import send_notification_to_owners
+from notifications.utils import send_notification_to_owners, send_notification
 
 
 class OrderCreateView(generics.CreateAPIView):
@@ -26,10 +26,8 @@ class OrderListView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        # Owners/agencies see all open orders
         if user.role in ['owner', 'agency']:
             return Order.objects.filter(status='open')
-        # Customers see their own orders
         return Order.objects.filter(customer=user)
 
 
@@ -69,6 +67,19 @@ class OrderResponseView(APIView):
         serializer = OrderResponseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(order=order, responder=user)
+
+            # Notify the customer
+            responder_name = user.agency_name if user.role == 'agency' and user.agency_name else user.full_name
+            send_notification(
+                user=order.customer,
+                type='response',
+                title_en=f'New Response on Your Order #{order.id}',
+                title_ar=f'رد جديد على طلبك #{order.id}',
+                message_en=f'{responder_name} has responded to your property order. Contact: {user.phone or user.whatsapp}',
+                message_ar=f'قام {responder_name} بالرد على طلب العقار الخاص بك. للتواصل: {user.phone or user.whatsapp}',
+                channel='dashboard'
+            )
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

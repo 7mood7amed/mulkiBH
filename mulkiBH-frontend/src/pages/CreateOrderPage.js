@@ -15,6 +15,10 @@ const CreateOrderPage = () => {
   const [governorates, setGovernorates] = useState([]);
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  // Check if selected category is Land
+  const selectedCategory = categories.find(c => c.id === parseInt(form.category));
+  const isLand = selectedCategory?.type === 'land';
   const [form, setForm] = useState({ category: '', governorate: '', city: '', listing_type: 'rent', price_min: '', price_max: '', bedrooms: '', bathrooms: '', area_sqm_min: '', description: '', notes: '', phone: '' });
 
   useEffect(() => {
@@ -101,16 +105,18 @@ const CreateOrderPage = () => {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
-          <div>
-            <label style={labelStyle}>{t('bedrooms')}</label>
-            <input type="number" value={form.bedrooms} onChange={e => setForm({...form, bedrooms: e.target.value})} style={inputStyle} min="1" />
+        {!isLand && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+            <div>
+              <label style={labelStyle}>{t('bedrooms')}</label>
+              <input type="number" value={form.bedrooms} onChange={e => setForm({...form, bedrooms: e.target.value})} style={inputStyle} min="1" />
+            </div>
+            <div>
+              <label style={labelStyle}>{t('bathrooms')}</label>
+              <input type="number" value={form.bathrooms} onChange={e => setForm({...form, bathrooms: e.target.value})} style={inputStyle} min="1" />
+            </div>
           </div>
-          <div>
-            <label style={labelStyle}>{t('bathrooms')}</label>
-            <input type="number" value={form.bathrooms} onChange={e => setForm({...form, bathrooms: e.target.value})} style={inputStyle} min="1" />
-          </div>
-        </div>
+        )}
 
         <div style={{ marginBottom: '16px' }}>
           <label style={labelStyle}>{t('phone')} *</label>
