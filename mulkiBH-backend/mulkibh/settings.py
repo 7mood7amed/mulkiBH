@@ -121,3 +121,11 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Email (configure later)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Tap Payments
+TAP_SECRET_KEY = config('TAP_SECRET_KEY', default='')
+TAP_PUBLIC_KEY = config('TAP_PUBLIC_KEY', default='')
+
+# URLs for redirects
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
+BACKEND_URL = config('BACKEND_URL', default='http://127.0.0.1:8000')
