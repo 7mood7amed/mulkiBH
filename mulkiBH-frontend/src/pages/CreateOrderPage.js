@@ -49,7 +49,7 @@ const CreateOrderPage = () => {
   const labelStyle = { display: 'block', marginBottom: '6px', fontWeight: '500' };
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '600px', margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '600px', margin: '0 auto', padding: '20px 16px', boxSizing: 'border-box', width: '100%' }}>
       <h2 style={{ color: '#1a3c5e', marginBottom: '8px' }}>{t('orderTitle')}</h2>
       <p style={{ color: '#718096', marginBottom: '32px' }}>{t('orderSubtitle')}</p>
 
