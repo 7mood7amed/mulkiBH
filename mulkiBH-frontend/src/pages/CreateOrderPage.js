@@ -11,13 +11,19 @@ const CreateOrderPage = () => {
   const { isRTL, lang } = useLang();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    category: '', governorate: '', city: '',
+    listing_type: 'rent', price_min: '', price_max: '',
+    bedrooms: '', bathrooms: '', area_sqm_min: '',
+    description: '', notes: '', phone: ''
+  });
+
   const [categories, setCategories] = useState([]);
   const [governorates, setGovernorates] = useState([]);
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ category: '', governorate: '', city: '', listing_type: 'rent', price_min: '', price_max: '', bedrooms: '', bathrooms: '', area_sqm_min: '', description: '', notes: '', phone: '' });
 
-  // Check if selected category is Land
   const selectedCategory = categories.find(c => c.id === parseInt(form.category));
   const isLand = selectedCategory?.type === 'land';
 
@@ -25,10 +31,11 @@ const CreateOrderPage = () => {
     if (!user) { navigate('/login'); return; }
     getCategories().then(r => setCategories(r.data)).catch(() => {});
     getGovernorates().then(r => setGovernorates(r.data)).catch(() => {});
-  }, []);
+  }, []); // eslint-disable-line
 
   useEffect(() => {
     if (form.governorate) getCities(form.governorate).then(r => setCities(r.data)).catch(() => {});
+    else setCities([]);
   }, [form.governorate]);
 
   const handleSubmit = async (e) => {
@@ -38,63 +45,93 @@ const CreateOrderPage = () => {
       const clean = Object.fromEntries(Object.entries(form).filter(([, v]) => v !== ''));
       await createOrder(clean);
       navigate('/orders');
-    } catch (err) {
+    } catch {
       alert('Failed to submit order.');
     } finally {
       setLoading(false);
     }
   };
 
-  const inputStyle = { width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '6px', boxSizing: 'border-box' };
-  const labelStyle = { display: 'block', marginBottom: '6px', fontWeight: '500' };
+  const inputStyle = {
+    width: '100%', padding: '10px', border: '1px solid #ddd',
+    borderRadius: '6px', boxSizing: 'border-box', fontSize: '14px',
+    fontFamily: 'inherit'
+  };
+  const labelStyle = { display: 'block', marginBottom: '6px', fontWeight: '500', fontSize: '14px' };
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '600px', margin: '0 auto', padding: '20px 16px', boxSizing: 'border-box', width: '100%' }}>
-      <h2 style={{ color: '#1a3c5e', marginBottom: '8px' }}>{t('orderTitle')}</h2>
-      <p style={{ color: '#718096', marginBottom: '32px' }}>{t('orderSubtitle')}</p>
+    <div style={{
+      direction: isRTL ? 'rtl' : 'ltr',
+      width: '100%',
+      maxWidth: '600px',
+      margin: '0 auto',
+      padding: '20px 16px',
+    }}>
+      <h2 style={{ color: '#1a3c5e', marginBottom: '8px', fontSize: 'clamp(18px, 4vw, 24px)' }}>{t('orderTitle')}</h2>
+      <p style={{ color: '#718096', marginBottom: '24px', fontSize: '14px' }}>{t('orderSubtitle')}</p>
 
-      <form onSubmit={handleSubmit} style={{ background: 'white', padding: 'clamp(16px, 4vw, 32px)', borderRadius: '12px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' }}>
+      <form onSubmit={handleSubmit} style={{
+        background: 'white', padding: '20px',
+        borderRadius: '12px', boxShadow: '0 2px 12px rgba(0,0,0,0.08)'
+      }}>
 
+        {/* Listing Type */}
         <div style={{ marginBottom: '16px' }}>
           <label style={labelStyle}>{t('listingType')}</label>
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div style={{ display: 'flex', gap: '10px' }}>
             {['rent', 'buy'].map(type => (
-              <button key={type} type="button" onClick={() => setForm({...form, listing_type: type})} style={{
-                flex: 1, padding: '10px', border: '2px solid', borderColor: form.listing_type === type ? '#1a3c5e' : '#ddd',
-                borderRadius: '6px', background: form.listing_type === type ? '#1a3c5e' : 'white',
-                color: form.listing_type === type ? 'white' : '#4a5568', cursor: 'pointer', fontWeight: '600'
-              }}>{t(type)}</button>
+              <button key={type} type="button"
+                onClick={() => setForm({...form, listing_type: type})}
+                style={{
+                  flex: 1, padding: '10px', border: '2px solid',
+                  borderColor: form.listing_type === type ? '#1a3c5e' : '#ddd',
+                  borderRadius: '6px',
+                  background: form.listing_type === type ? '#1a3c5e' : 'white',
+                  color: form.listing_type === type ? 'white' : '#4a5568',
+                  cursor: 'pointer', fontWeight: '600', fontSize: '14px'
+                }}
+              >{t(type)}</button>
             ))}
           </div>
         </div>
 
+        {/* Category */}
         <div style={{ marginBottom: '16px' }}>
           <label style={labelStyle}>{t('category')}</label>
           <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} style={inputStyle} required>
             <option value="">-- {t('category')} --</option>
-            {categories.map(c => <option key={c.id} value={c.id}>{lang === 'ar' ? c.name_ar : c.name_en}</option>)}
+            {categories.map(c => (
+              <option key={c.id} value={c.id}>{lang === 'ar' ? c.name_ar : c.name_en}</option>
+            ))}
           </select>
         </div>
 
+        {/* Governorate */}
         <div style={{ marginBottom: '16px' }}>
           <label style={labelStyle}>{t('governorate')}</label>
           <select value={form.governorate} onChange={e => setForm({...form, governorate: e.target.value})} style={inputStyle}>
             <option value="">-- {t('governorate')} --</option>
-            {governorates.map(g => <option key={g.id} value={g.id}>{lang === 'ar' ? g.name_ar : g.name_en}</option>)}
+            {governorates.map(g => (
+              <option key={g.id} value={g.id}>{lang === 'ar' ? g.name_ar : g.name_en}</option>
+            ))}
           </select>
         </div>
 
+        {/* City */}
         {cities.length > 0 && (
           <div style={{ marginBottom: '16px' }}>
             <label style={labelStyle}>{t('city')}</label>
             <select value={form.city} onChange={e => setForm({...form, city: e.target.value})} style={inputStyle}>
               <option value="">-- {t('city')} --</option>
-              {cities.map(c => <option key={c.id} value={c.id}>{lang === 'ar' ? c.name_ar : c.name_en}</option>)}
+              {cities.map(c => (
+                <option key={c.id} value={c.id}>{lang === 'ar' ? c.name_ar : c.name_en}</option>
+              ))}
             </select>
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+        {/* Price Range */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
           <div>
             <label style={labelStyle}>{t('minPrice')}</label>
             <input type="number" value={form.price_min} onChange={e => setForm({...form, price_min: e.target.value})} style={inputStyle} />
@@ -105,8 +142,9 @@ const CreateOrderPage = () => {
           </div>
         </div>
 
+        {/* Bedrooms/Bathrooms — hidden for land */}
         {!isLand && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '16px' }}>
             <div>
               <label style={labelStyle}>{t('bedrooms')}</label>
               <input type="number" value={form.bedrooms} onChange={e => setForm({...form, bedrooms: e.target.value})} style={inputStyle} min="1" />
@@ -118,17 +156,27 @@ const CreateOrderPage = () => {
           </div>
         )}
 
+        {/* Phone */}
         <div style={{ marginBottom: '16px' }}>
           <label style={labelStyle}>{t('phone')} *</label>
           <input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} style={inputStyle} required />
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
+        {/* Notes */}
+        <div style={{ marginBottom: '20px' }}>
           <label style={labelStyle}>{t('notes')}</label>
-          <textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }} />
+          <textarea
+            value={form.notes}
+            onChange={e => setForm({...form, notes: e.target.value})}
+            style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }}
+          />
         </div>
 
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: '12px', background: '#1a3c5e', color: 'white', border: 'none', borderRadius: '6px', fontSize: '16px', cursor: 'pointer', fontWeight: '600' }}>
+        <button type="submit" disabled={loading} style={{
+          width: '100%', padding: '12px', background: '#1a3c5e', color: 'white',
+          border: 'none', borderRadius: '6px', fontSize: '16px',
+          cursor: 'pointer', fontWeight: '600'
+        }}>
           {loading ? t('loading') : t('submitOrder')}
         </button>
       </form>
