@@ -1,5 +1,38 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f9fa; color: #2d3748; }
-body[dir="rtl"] { font-family: 'Segoe UI', 'Arial', sans-serif; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8f9fa;
+  color: #2d3748;
+  -webkit-font-smoothing: antialiased;
+}
+
+body[dir="rtl"] {
+  font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+}
+
 a { text-decoration: none; }
 button { font-family: inherit; }
+input, select, textarea { font-family: inherit; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #c8a951; border-radius: 3px; }
+
+/* Mobile base */
+@media (max-width: 768px) {
+  /* Stack grids on mobile */
+  .mobile-stack {
+    grid-template-columns: 1fr !important;
+  }
+  /* Full width on mobile */
+  .mobile-full {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  /* Smaller padding on mobile */
+  .mobile-pad {
+    padding: 16px !important;
+  }
+}
