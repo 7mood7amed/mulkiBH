@@ -61,13 +61,13 @@ const OrderDetailPage = () => {
   const isCustomer = order.customer === user?.id;
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '800px', margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '800px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
       <button onClick={() => navigate('/orders')} style={{ background: 'none', border: 'none', color: '#1a3c5e', cursor: 'pointer', marginBottom: '16px', fontSize: '15px' }}>
         ← {t('back')}
       </button>
 
       {/* Order Header */}
-      <div style={{ background: 'white', borderRadius: '12px', padding: '28px', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', marginBottom: '24px' }}>
+      <div style={{ background: 'white', borderRadius: '12px', padding: 'clamp(16px, 4vw, 28px)', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', marginBottom: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
           <div>
             <h2 style={{ color: '#1a3c5e', margin: '0 0 8px' }}>

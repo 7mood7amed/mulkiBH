@@ -34,7 +34,7 @@ const RegisterPage = () => {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f5f7fa', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-      <div style={{ background: 'white', padding: '40px', borderRadius: '12px', width: '100%', maxWidth: '480px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', direction: isRTL ? 'rtl' : 'ltr' }}>
+      <div style={{ background: 'white', padding: 'clamp(20px, 5vw, 40px)', borderRadius: '12px', width: '100%', maxWidth: '480px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', direction: isRTL ? 'rtl' : 'ltr' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '24px', color: '#1a3c5e' }}>{t('registerTitle')}</h2>
 
         <form onSubmit={handleSubmit}>

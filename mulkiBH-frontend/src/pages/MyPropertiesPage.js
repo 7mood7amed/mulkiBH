@@ -27,7 +27,7 @@ const MyPropertiesPage = () => {
   };
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '1000px', margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '1000px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h2 style={{ color: '#1a3c5e', margin: 0 }}>{isRTL ? 'عقاراتي' : 'My Properties'}</h2>
         <button onClick={() => navigate('/properties/create')} style={{

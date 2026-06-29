@@ -29,7 +29,7 @@ const NotificationsPage = () => {
   };
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '700px', margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '700px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <h2 style={{ color: '#1a3c5e', margin: 0 }}>{t('notifications')}</h2>
         <button onClick={handleMarkAll} style={{ background: 'none', border: '1px solid #1a3c5e', color: '#1a3c5e', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}>{t('markAllRead')}</button>

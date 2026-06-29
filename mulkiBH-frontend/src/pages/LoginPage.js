@@ -31,7 +31,7 @@ const LoginPage = () => {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f5f7fa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ background: 'white', padding: '40px', borderRadius: '12px', width: '100%', maxWidth: '420px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', direction: isRTL ? 'rtl' : 'ltr' }}>
+      <div style={{ background: 'white', padding: 'clamp(20px, 5vw, 40px)', borderRadius: '12px', width: '100%', maxWidth: '420px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', direction: isRTL ? 'rtl' : 'ltr' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '24px', color: '#1a3c5e' }}>{t('loginTitle')}</h2>
 
         {error && <div style={{ background: '#fff5f5', color: '#e53e3e', padding: '10px', borderRadius: '6px', marginBottom: '16px' }}>{error}</div>}

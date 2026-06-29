@@ -78,7 +78,7 @@ const ProfilePage = () => {
   ];
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '700px', margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '700px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
 
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, #1a3c5e, #2d6a9f)', borderRadius: '14px', padding: '28px', color: 'white', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -123,7 +123,7 @@ const ProfilePage = () => {
 
       {/* Profile Tab */}
       {activeTab === 'profile' && (
-        <div style={{ background: 'white', padding: '28px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: 'white', padding: 'clamp(16px, 4vw, 28px)', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
           <h3 style={{ color: '#1a3c5e', marginBottom: '24px' }}>{isRTL ? 'تعديل الملف الشخصي' : 'Edit Profile'}</h3>
           <form onSubmit={handleProfileSave}>
 
@@ -180,7 +180,7 @@ const ProfilePage = () => {
 
       {/* Password Tab */}
       {activeTab === 'password' && (
-        <div style={{ background: 'white', padding: '28px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: 'white', padding: 'clamp(16px, 4vw, 28px)', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
           <h3 style={{ color: '#1a3c5e', marginBottom: '24px' }}>{isRTL ? 'تغيير كلمة المرور' : 'Change Password'}</h3>
           <form onSubmit={handlePasswordSave}>
             {[

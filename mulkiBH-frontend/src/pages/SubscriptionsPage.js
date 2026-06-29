@@ -96,7 +96,7 @@ const SubscriptionsPage = () => {
   );
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '900px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
       <h2 style={{ color: '#1a3c5e', marginBottom: '8px', textAlign: 'center' }}>{t('subscriptions')}</h2>
       <p style={{ textAlign: 'center', color: '#718096', marginBottom: '32px' }}>
         {isRTL ? 'اختر الخطة المناسبة لك لنشر عقاراتك واستقبال الطلبات' : 'Choose a plan to post listings and receive orders'}
@@ -134,7 +134,7 @@ const SubscriptionsPage = () => {
           const isCurrent = current?.plan_name === plan.name;
           return (
             <div key={plan.id} style={{
-              background: 'white', borderRadius: '14px', padding: '32px 24px', textAlign: 'center',
+              background: 'white', borderRadius: '14px', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)', textAlign: 'center',
               boxShadow: isCurrent ? `0 0 0 3px ${planColors[plan.name]}` : '0 4px 16px rgba(0,0,0,0.08)',
               border: `2px solid ${isCurrent ? planColors[plan.name] : '#e2e8f0'}`,
               position: 'relative'

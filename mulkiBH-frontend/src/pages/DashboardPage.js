@@ -25,7 +25,7 @@ const DashboardPage = () => {
   ];
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
+    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '900px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
       <h2 style={{ color: '#1a3c5e', marginBottom: '8px' }}>{t('dashboard')}</h2>
       <p style={{ color: '#718096', marginBottom: '32px' }}>
         {isRTL ? `مرحباً، ${user.full_name}` : `Welcome, ${user.full_name}`}
