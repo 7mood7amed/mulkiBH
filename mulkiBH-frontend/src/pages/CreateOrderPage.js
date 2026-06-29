@@ -15,11 +15,11 @@ const CreateOrderPage = () => {
   const [governorates, setGovernorates] = useState([]);
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ category: '', governorate: '', city: '', listing_type: 'rent', price_min: '', price_max: '', bedrooms: '', bathrooms: '', area_sqm_min: '', description: '', notes: '', phone: '' });
 
   // Check if selected category is Land
   const selectedCategory = categories.find(c => c.id === parseInt(form.category));
   const isLand = selectedCategory?.type === 'land';
-  const [form, setForm] = useState({ category: '', governorate: '', city: '', listing_type: 'rent', price_min: '', price_max: '', bedrooms: '', bathrooms: '', area_sqm_min: '', description: '', notes: '', phone: '' });
 
   useEffect(() => {
     if (!user) { navigate('/login'); return; }
