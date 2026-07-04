@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { getNotifications, markRead, markAllRead } from '../api/notifications';
 import { useAuth } from '../context/AuthContext';

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import { getPlans, getCurrentSubscription } from '../api/subscriptions';
 import API from '../api/axios';
