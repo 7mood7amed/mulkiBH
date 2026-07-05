@@ -18,8 +18,13 @@ const PropertiesPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     search: searchParams.get('search') || '',
-    listing_type: '', category: '', governorate: '', city: '',
-    price_min: '', price_max: '', bedrooms: '',
+    listing_type: searchParams.get('listing_type') || '',
+    category: searchParams.get('category') || '',
+    governorate: searchParams.get('governorate') || '',
+    city: searchParams.get('city') || '',
+    price_min: searchParams.get('price_min') || '',
+    price_max: searchParams.get('price_max') || '',
+    bedrooms: searchParams.get('bedrooms') || '',
   });
 
   useEffect(() => {

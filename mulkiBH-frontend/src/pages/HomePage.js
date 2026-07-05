@@ -1,17 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useT } from '../hooks/useTranslation';
 import { useLang } from '../context/LanguageContext';
+import { getCategories, getGovernorates } from '../api/properties';
 
 const HomePage = () => {
   const t = useT();
-  const { isRTL } = useLang();
+  const { isRTL, lang } = useLang();
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
+
+  const [categories, setCategories] = useState([]);
+  const [governorates, setGovernorates] = useState([]);
+  const [filters, setFilters] = useState({
+    listing_type: 'rent',
+    search: '',
+    category: '',
+    governorate: '',
+    price_max: '',
+    bedrooms: '',
+  });
+
+  useEffect(() => {
+    getCategories().then(r => setCategories(r.data)).catch(() => {});
+    getGovernorates().then(r => setGovernorates(r.data)).catch(() => {});
+  }, []);
 
   const handleSearch = () => {
-    if (search.trim()) navigate(`/properties?search=${search}`);
-    else navigate('/properties');
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([k, v]) => { if (v) params.set(k, v); });
+    navigate(`/properties?${params.toString()}`);
+  };
+
+  const selectStyle = {
+    padding: '12px', border: 'none', borderRadius: '8px',
+    fontSize: '14px', background: 'white', cursor: 'pointer',
+    outline: 'none', width: '100%'
   };
 
   return (
@@ -19,48 +42,105 @@ const HomePage = () => {
       {/* Hero */}
       <div style={{
         background: 'linear-gradient(135deg, #1a3c5e 0%, #2d6a9f 100%)',
-        color: 'white', padding: '60px 20px', textAlign: 'center'
+        color: 'white', padding: '60px 20px 40px', textAlign: 'center'
       }}>
-        <h1 style={{ fontSize: 'clamp(22px, 5vw, 36px)', marginBottom: '12px', fontWeight: 'bold', lineHeight: '1.3' }}>
+        <h1 style={{ fontSize: 'clamp(22px, 5vw, 36px)', marginBottom: '12px', fontWeight: 'bold' }}>
           {t('heroTitle')}
         </h1>
-        <p style={{ fontSize: 'clamp(14px, 3vw, 18px)', marginBottom: '32px', opacity: 0.85, maxWidth: '600px', margin: '0 auto 32px' }}>
+        <p style={{ fontSize: 'clamp(14px, 3vw, 18px)', marginBottom: '32px', opacity: 0.85 }}>
           {t('heroSubtitle')}
         </p>
 
-        {/* Search Bar */}
+        {/* Search Box */}
         <div style={{
-          display: 'flex', maxWidth: '560px', margin: '0 auto 24px',
-          gap: '8px', flexDirection: isRTL ? 'row-reverse' : 'row'
+          background: 'white', borderRadius: '16px', padding: '20px',
+          maxWidth: '860px', margin: '0 auto',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
         }}>
-          <input
-            value={search} onChange={e => setSearch(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-            placeholder={t('searchPlaceholder')}
-            style={{
-              flex: 1, padding: '14px', borderRadius: '8px',
-              border: 'none', fontSize: '15px', minWidth: 0
-            }}
-          />
+          {/* Rent / Sale Toggle */}
+          <div style={{ display: 'flex', marginBottom: '16px', background: '#f0f4f8', borderRadius: '8px', padding: '4px' }}>
+            {['rent', 'sale'].map(type => (
+              <button key={type} onClick={() => setFilters({...filters, listing_type: type})} style={{
+                flex: 1, padding: '8px', border: 'none', borderRadius: '6px', cursor: 'pointer',
+                fontWeight: '600', fontSize: '14px', transition: 'all 0.2s',
+                background: filters.listing_type === type ? '#1a3c5e' : 'transparent',
+                color: filters.listing_type === type ? 'white' : '#718096',
+              }}>
+                {type === 'rent' ? t('forRent') : t('forSale')}
+              </button>
+            ))}
+          </div>
+
+          {/* Filter Row */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+            gap: '10px', marginBottom: '14px'
+          }}>
+            {/* Search */}
+            <input
+              value={filters.search}
+              onChange={e => setFilters({...filters, search: e.target.value})}
+              onKeyDown={e => e.key === 'Enter' && handleSearch()}
+              placeholder={t('searchPlaceholder')}
+              style={{ ...selectStyle, border: '1px solid #e2e8f0', color: '#2d3748' }}
+            />
+
+            {/* Category */}
+            <select value={filters.category} onChange={e => setFilters({...filters, category: e.target.value})} style={{ ...selectStyle, border: '1px solid #e2e8f0', color: filters.category ? '#2d3748' : '#a0aec0' }}>
+              <option value="">{t('category')}</option>
+              {categories.map(c => (
+                <option key={c.id} value={c.id}>{lang === 'ar' ? c.name_ar : c.name_en}</option>
+              ))}
+            </select>
+
+            {/* Governorate */}
+            <select value={filters.governorate} onChange={e => setFilters({...filters, governorate: e.target.value})} style={{ ...selectStyle, border: '1px solid #e2e8f0', color: filters.governorate ? '#2d3748' : '#a0aec0' }}>
+              <option value="">{t('governorate')}</option>
+              {governorates.map(g => (
+                <option key={g.id} value={g.id}>{lang === 'ar' ? g.name_ar : g.name_en}</option>
+              ))}
+            </select>
+
+            {/* Bedrooms */}
+            <select value={filters.bedrooms} onChange={e => setFilters({...filters, bedrooms: e.target.value})} style={{ ...selectStyle, border: '1px solid #e2e8f0', color: filters.bedrooms ? '#2d3748' : '#a0aec0' }}>
+              <option value="">{t('bedrooms')}</option>
+              {[1,2,3,4,5,6].map(n => (
+                <option key={n} value={n}>{n}+</option>
+              ))}
+            </select>
+
+            {/* Max Price */}
+            <input
+              type="number"
+              value={filters.price_max}
+              onChange={e => setFilters({...filters, price_max: e.target.value})}
+              placeholder={`${t('maxPrice')}`}
+              style={{ ...selectStyle, border: '1px solid #e2e8f0', color: '#2d3748' }}
+            />
+          </div>
+
+          {/* Search Button */}
           <button onClick={handleSearch} style={{
-            background: '#c8a951', color: 'white', border: 'none',
-            padding: '14px 20px', borderRadius: '8px', cursor: 'pointer',
-            fontWeight: '600', fontSize: '15px', whiteSpace: 'nowrap'
-          }}>{t('search')}</button>
+            width: '100%', padding: '14px', background: '#c8a951', color: 'white',
+            border: 'none', borderRadius: '8px', cursor: 'pointer',
+            fontWeight: '700', fontSize: '16px', letterSpacing: '0.5px'
+          }}>
+            🔍 {t('search')}
+          </button>
         </div>
 
-        {/* CTA Buttons */}
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => navigate('/properties')} style={{
-            background: 'white', color: '#1a3c5e', border: 'none',
-            padding: '12px 24px', borderRadius: '8px', cursor: 'pointer',
-            fontWeight: '600', fontSize: '15px'
-          }}>{t('browseProperties')}</button>
+        {/* Post Order CTA */}
+        <div style={{ marginTop: '24px' }}>
+          <p style={{ opacity: 0.7, fontSize: '14px', marginBottom: '10px' }}>
+            {isRTL ? "لا تجد ما تبحث عنه؟" : "Can't find what you're looking for?"}
+          </p>
           <button onClick={() => navigate('/orders/create')} style={{
-            background: '#c8a951', color: 'white', border: 'none',
-            padding: '12px 24px', borderRadius: '8px', cursor: 'pointer',
-            fontWeight: '600', fontSize: '15px'
-          }}>{t('postYourOrder')}</button>
+            background: 'transparent', color: 'white',
+            border: '2px solid rgba(255,255,255,0.6)',
+            padding: '10px 24px', borderRadius: '8px', cursor: 'pointer',
+            fontWeight: '600', fontSize: '14px'
+          }}>{t('postYourOrder')} →</button>
         </div>
       </div>
 
@@ -68,8 +148,7 @@ const HomePage = () => {
       <div style={{ padding: '48px 20px', background: '#f8f9fa' }}>
         <div style={{
           maxWidth: '1000px', margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
           gap: '24px'
         }}>
           {[
@@ -89,7 +168,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Stats Section */}
+      {/* Stats */}
       <div style={{ background: '#1a3c5e', padding: '40px 20px', color: 'white', textAlign: 'center' }}>
         <div style={{
           maxWidth: '800px', margin: '0 auto',
