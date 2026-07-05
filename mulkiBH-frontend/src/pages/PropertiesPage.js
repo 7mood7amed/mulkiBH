@@ -162,7 +162,19 @@ const PropertiesPage = () => {
         {/* Property Grid */}
         <div style={{ flex: 1, padding: '20px', background: '#f8f9fa' }}>
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#718096' }}>{t('loading')}</div>
+            
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
+  {[1,2,3,4,5,6].map(i => (
+    <div key={i} style={{ background: 'white', borderRadius: '10px', overflow: 'hidden' }}>
+      <div className="skeleton" style={{ height: '180px' }} />
+      <div style={{ padding: '14px' }}>
+        <div className="skeleton" style={{ height: '14px', marginBottom: '8px', width: '60%' }} />
+        <div className="skeleton" style={{ height: '12px', marginBottom: '6px', width: '80%' }} />
+        <div className="skeleton" style={{ height: '12px', width: '40%' }} />
+      </div>
+    </div>
+  ))}
+</div>
           ) : properties.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px', color: '#718096' }}>
               <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏠</div>
@@ -175,7 +187,7 @@ const PropertiesPage = () => {
               gap: '16px'
             }}>
               {properties.map(p => (
-                <div key={p.id} onClick={() => navigate(`/properties/${p.id}`)} style={{
+                <div key={p.id} className='property-card' onClick={() => navigate(`/properties/${p.id}`)} style={{
                   background: 'white', borderRadius: '10px', overflow: 'hidden',
                   boxShadow: '0 2px 10px rgba(0,0,0,0.07)', cursor: 'pointer',
                 }}>

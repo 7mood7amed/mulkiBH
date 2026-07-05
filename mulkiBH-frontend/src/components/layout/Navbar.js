@@ -56,8 +56,8 @@ const Navbar = () => {
           display: 'flex', gap: '20px', alignItems: 'center',
           flexDirection: isRTL ? 'row-reverse' : 'row'
         }} className="desktop-nav">
-          <Link to="/properties" style={navLink}>{t('properties')}</Link>
-          <Link to="/orders/create" style={navLink}>{t('postOrder')}</Link>
+          <Link to="/properties" className='nav-link' style={navLink}>{t('properties')}</Link>
+          <Link to="/orders/create" className='nav-link' style={navLink}>{t('postOrder')}</Link>
 
           {user ? (
             <>
@@ -71,7 +71,7 @@ const Navbar = () => {
                   }}>{unread}</span>
                 )}
               </Link>
-              <Link to="/dashboard" style={navLink}>{t('dashboard')}</Link>
+              <Link to="/dashboard" className='nav-link' style={navLink}>{t('dashboard')}</Link>
               <button onClick={handleLogout} style={{
                 background: 'transparent', border: '1px solid white',
                 color: 'white', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer'
