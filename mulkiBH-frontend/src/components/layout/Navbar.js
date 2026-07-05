@@ -104,7 +104,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile right — hamburger only */}
-        <div style={{ display: 'none', gap: '6px', alignItems: 'center' }} className="mobile-nav">
+        <div style={{ gap: '6px', alignItems: 'center' }} className="mobile-nav">
           <IconBtn onClick={toggleTheme}>{isDark ? '☀️' : '🌙'}</IconBtn>
           <button onClick={toggleLang} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
             {lang === 'en' ? 'ع' : 'EN'}

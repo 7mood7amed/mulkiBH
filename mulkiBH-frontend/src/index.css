@@ -169,6 +169,10 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* ===================== RESPONSIVE ===================== */
+/* Default: show desktop, hide mobile */
+.mobile-nav { display: none; }
+.desktop-nav { display: flex; }
+
 @media (max-width: 768px) {
   .desktop-sidebar { display: none !important; }
   .desktop-nav { display: none !important; }
