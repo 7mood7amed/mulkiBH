@@ -1,7 +1,10 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useLang } from '../../context/LanguageContext';
+import { useTheme } from '../../context/ThemeContext';
+import { useFavorites } from '../../context/FavoritesContext';
 import { useT } from '../../hooks/useTranslation';
 import { logout } from '../../api/auth';
 import { getUnreadCount } from '../../api/notifications';
@@ -9,15 +12,15 @@ import { getUnreadCount } from '../../api/notifications';
 const Navbar = () => {
   const { user, logoutUser } = useAuth();
   const { lang, toggleLang, isRTL } = useLang();
+  const { isDark, toggleTheme } = useTheme();
+  const { favorites } = useFavorites();
   const t = useT();
   const navigate = useNavigate();
   const [unread, setUnread] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      getUnreadCount().then(res => setUnread(res.data.unread_count)).catch(() => {});
-    }
+    if (user) getUnreadCount().then(res => setUnread(res.data.unread_count)).catch(() => {});
   }, [user]);
 
   const handleLogout = async () => {
@@ -27,141 +30,110 @@ const Navbar = () => {
     setMenuOpen(false);
   };
 
-  const navLink = {
-    color: 'white', textDecoration: 'none', fontSize: '15px', padding: '8px 4px',
-    display: 'block'
-  };
+  const navBg = isDark ? '#0d2137' : '#1a3c5e';
+
+  const navLink = { color: 'white', textDecoration: 'none', fontSize: '15px', padding: '8px 4px', display: 'block' };
+
+  const IconBtn = ({ onClick, children, badge }) => (
+    <button onClick={onClick} style={{
+      background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white',
+      width: '36px', height: '36px', borderRadius: '8px', cursor: 'pointer',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: '16px', position: 'relative', transition: 'background 0.2s'
+    }}>
+      {children}
+      {badge > 0 && (
+        <span style={{
+          position: 'absolute', top: '-4px', right: '-4px',
+          background: '#e53e3e', color: 'white', borderRadius: '50%',
+          width: '16px', height: '16px', fontSize: '10px', fontWeight: '700',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>{badge > 9 ? '9+' : badge}</span>
+      )}
+    </button>
+  );
 
   return (
-    <nav style={{
-      background: '#1a3c5e', color: 'white',
-      position: 'sticky', top: 0, zIndex: 1000,
-      boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
-    }}>
-      {/* Main Bar */}
-      <div style={{
-        padding: '0 20px', height: '64px',
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'space-between',
-        flexDirection: isRTL ? 'row-reverse' : 'row'
-      }}>
+    <nav style={{ background: navBg, color: 'white', position: 'sticky', top: 0, zIndex: 1000, boxShadow: '0 2px 10px rgba(0,0,0,0.2)', transition: 'background 0.3s ease' }}>
+      <div style={{ padding: '0 20px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexDirection: isRTL ? 'row-reverse' : 'row' }}>
+
         {/* Logo */}
-        <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '22px', fontWeight: 'bold' }}
-          onClick={() => setMenuOpen(false)}>
+        <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '20px', fontWeight: '800', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '8px' }}>
           🏠 {isRTL ? 'ملكي' : 'MulkiBH'}
         </Link>
 
         {/* Desktop Links */}
-        <div style={{
-          display: 'flex', gap: '20px', alignItems: 'center',
-          flexDirection: isRTL ? 'row-reverse' : 'row'
-        }} className="desktop-nav">
-          <Link to="/properties" className='nav-link' style={navLink}>{t('properties')}</Link>
-          <Link to="/orders/create" className='nav-link' style={navLink}>{t('postOrder')}</Link>
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center', flexDirection: isRTL ? 'row-reverse' : 'row' }} className="desktop-nav">
+          <Link to="/properties" className="nav-link" style={{ ...navLink, padding: '8px 12px', borderRadius: '8px' }}>{t('properties')}</Link>
+          <Link to="/orders/create" className="nav-link" style={{ ...navLink, padding: '8px 12px', borderRadius: '8px' }}>{t('postOrder')}</Link>
+
+          <div style={{ width: '1px', height: '24px', background: 'rgba(255,255,255,0.2)', margin: '0 8px' }} />
+
+          {/* Favorites */}
+          <IconBtn onClick={() => navigate('/favorites')} badge={favorites.length}>❤️</IconBtn>
+
+          {/* Dark mode */}
+          <IconBtn onClick={toggleTheme}>{isDark ? '☀️' : '🌙'}</IconBtn>
+
+          {/* Language */}
+          <button onClick={toggleLang} style={{
+            background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white',
+            padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600'
+          }}>{lang === 'en' ? 'العربية' : 'English'}</button>
 
           {user ? (
             <>
-              <Link to="/notifications" style={{ ...navLink, position: 'relative' }}>
-                🔔
-                {unread > 0 && (
-                  <span style={{
-                    background: '#e53e3e', borderRadius: '50%', fontSize: '11px',
-                    padding: '2px 5px', position: 'absolute', top: '-8px',
-                    right: isRTL ? 'auto' : '-8px', left: isRTL ? '-8px' : 'auto'
-                  }}>{unread}</span>
-                )}
-              </Link>
-              <Link to="/dashboard" className='nav-link' style={navLink}>{t('dashboard')}</Link>
+              <IconBtn onClick={() => navigate('/notifications')} badge={unread}>🔔</IconBtn>
+              <Link to="/dashboard" className="nav-link" style={{ ...navLink, padding: '8px 12px', borderRadius: '8px' }}>{t('dashboard')}</Link>
               <button onClick={handleLogout} style={{
-                background: 'transparent', border: '1px solid white',
-                color: 'white', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer'
+                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.3)',
+                color: 'white', padding: '7px 14px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px'
               }}>{t('logout')}</button>
             </>
           ) : (
             <>
-              <Link to="/login" style={navLink}>{t('login')}</Link>
+              <Link to="/login" className="nav-link" style={{ ...navLink, padding: '8px 12px', borderRadius: '8px' }}>{t('login')}</Link>
               <Link to="/register" style={{
                 background: '#c8a951', color: 'white', textDecoration: 'none',
-                padding: '6px 14px', borderRadius: '6px', fontWeight: '600'
+                padding: '8px 16px', borderRadius: '8px', fontWeight: '700', fontSize: '14px'
               }}>{t('register')}</Link>
             </>
           )}
-
-          <button onClick={toggleLang} style={{
-            background: 'transparent', border: '1px solid rgba(255,255,255,0.5)',
-            color: 'white', padding: '4px 10px', borderRadius: '6px',
-            cursor: 'pointer', fontSize: '13px'
-          }}>
-            {lang === 'en' ? 'العربية' : 'English'}
-          </button>
         </div>
 
-        {/* Mobile: lang + hamburger */}
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }} className="mobile-nav">
-          <button onClick={toggleLang} style={{
-            background: 'transparent', border: '1px solid rgba(255,255,255,0.5)',
-            color: 'white', padding: '4px 8px', borderRadius: '6px',
-            cursor: 'pointer', fontSize: '12px'
-          }}>
+        {/* Mobile */}
+        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }} className="mobile-nav">
+          <IconBtn onClick={toggleTheme}>{isDark ? '☀️' : '🌙'}</IconBtn>
+          <button onClick={toggleLang} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
             {lang === 'en' ? 'ع' : 'EN'}
           </button>
-          {user && unread > 0 && (
-            <Link to="/notifications" style={{ color: 'white', textDecoration: 'none', position: 'relative' }}
-              onClick={() => setMenuOpen(false)}>
-              🔔
-              <span style={{
-                background: '#e53e3e', borderRadius: '50%', fontSize: '11px',
-                padding: '2px 5px', position: 'absolute', top: '-8px', right: '-8px'
-              }}>{unread}</span>
-            </Link>
-          )}
-          <button onClick={() => setMenuOpen(!menuOpen)} style={{
-            background: 'transparent', border: 'none', color: 'white',
-            fontSize: '24px', cursor: 'pointer', padding: '4px'
-          }}>
+          {user && <IconBtn onClick={() => { navigate('/notifications'); setMenuOpen(false); }} badge={unread}>🔔</IconBtn>}
+          <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer', padding: '6px 10px', borderRadius: '8px' }}>
             {menuOpen ? '✕' : '☰'}
           </button>
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile Menu */}
       {menuOpen && (
-        <div style={{
-          background: '#1a3c5e', borderTop: '1px solid rgba(255,255,255,0.1)',
-          padding: '12px 20px', direction: isRTL ? 'rtl' : 'ltr'
-        }} className="mobile-menu">
+        <div className="slide-in-down" style={{ background: isDark ? '#0d2137' : '#162f4a', borderTop: '1px solid rgba(255,255,255,0.1)', padding: '12px 20px 16px', direction: isRTL ? 'rtl' : 'ltr' }}>
           <Link to="/properties" style={navLink} onClick={() => setMenuOpen(false)}>{t('properties')}</Link>
           <Link to="/orders/create" style={navLink} onClick={() => setMenuOpen(false)}>{t('postOrder')}</Link>
+          <Link to="/favorites" style={navLink} onClick={() => setMenuOpen(false)}>❤️ {isRTL ? 'المفضلة' : 'Favorites'} {favorites.length > 0 && `(${favorites.length})`}</Link>
           {user ? (
             <>
-              <Link to="/notifications" style={navLink} onClick={() => setMenuOpen(false)}>🔔 {t('notifications')}</Link>
               <Link to="/dashboard" style={navLink} onClick={() => setMenuOpen(false)}>{t('dashboard')}</Link>
               <Link to="/profile" style={navLink} onClick={() => setMenuOpen(false)}>{t('myAccount')}</Link>
-              <button onClick={handleLogout} style={{
-                background: 'transparent', border: '1px solid rgba(255,255,255,0.5)',
-                color: 'white', padding: '8px 14px', borderRadius: '6px',
-                cursor: 'pointer', width: '100%', marginTop: '8px', textAlign: isRTL ? 'right' : 'left'
-              }}>{t('logout')}</button>
+              <button onClick={handleLogout} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '8px 0', cursor: 'pointer', width: '100%', textAlign: isRTL ? 'right' : 'left', fontSize: '15px', marginTop: '4px' }}>{t('logout')}</button>
             </>
           ) : (
             <>
               <Link to="/login" style={navLink} onClick={() => setMenuOpen(false)}>{t('login')}</Link>
-              <Link to="/register" style={{ ...navLink, color: '#c8a951', fontWeight: '600' }} onClick={() => setMenuOpen(false)}>{t('register')}</Link>
+              <Link to="/register" style={{ ...navLink, color: '#c8a951', fontWeight: '700' }} onClick={() => setMenuOpen(false)}>{t('register')}</Link>
             </>
           )}
         </div>
       )}
-
-      {/* Responsive CSS */}
-      <style>{`
-        .desktop-nav { display: flex !important; }
-        .mobile-nav { display: none !important; }
-        .mobile-menu { display: block; }
-        @media (max-width: 768px) {
-          .desktop-nav { display: none !important; }
-          .mobile-nav { display: flex !important; }
-        }
-      `}</style>
     </nav>
   );
 };

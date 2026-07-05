@@ -5,15 +5,16 @@ html, body {
   max-width: 100%;
 }
 
+/* Arabic font for RTL, Inter for LTR */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background: #f8f9fa;
   color: #2d3748;
   -webkit-font-smoothing: antialiased;
 }
 
-body[dir="rtl"] {
-  font-family: 'Segoe UI', 'Tahoma', 'Arial', sans-serif;
+body[dir="rtl"], [dir="rtl"] {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
 }
 
 a { text-decoration: none; }
@@ -25,57 +26,48 @@ input, select, textarea { font-family: inherit; }
 ::-webkit-scrollbar-track { background: #f1f1f1; }
 ::-webkit-scrollbar-thumb { background: #c8a951; border-radius: 3px; }
 
+/* Top progress bar */
+#nprogress .bar {
+  background: #c8a951 !important;
+  height: 3px !important;
+}
+
 /* Animations */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
 @keyframes slideInDown {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-
-@keyframes countUp {
-  from { opacity: 0; transform: scale(0.5); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes progressBar {
+  0% { width: 0%; opacity: 1; }
+  90% { width: 90%; opacity: 1; }
+  100% { width: 100%; opacity: 0; }
 }
 
-/* Animation classes */
-.fade-in-up {
-  animation: fadeInUp 0.6s ease forwards;
-}
-
-.fade-in {
-  animation: fadeIn 0.5s ease forwards;
-}
-
-.slide-in-down {
-  animation: slideInDown 0.4s ease forwards;
-}
-
+.fade-in-up { animation: fadeInUp 0.6s ease forwards; }
+.fade-in { animation: fadeIn 0.5s ease forwards; }
+.slide-in-down { animation: slideInDown 0.4s ease forwards; }
 .delay-1 { animation-delay: 0.1s; opacity: 0; }
 .delay-2 { animation-delay: 0.2s; opacity: 0; }
 .delay-3 { animation-delay: 0.3s; opacity: 0; }
 .delay-4 { animation-delay: 0.4s; opacity: 0; }
 .delay-5 { animation-delay: 0.5s; opacity: 0; }
 
-/* Property Card Hover */
+/* Property Card */
 .property-card {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   cursor: pointer;
@@ -85,22 +77,18 @@ input, select, textarea { font-family: inherit; }
   box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
 }
 
-/* Button Hover */
+/* Buttons */
 .btn-primary {
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(26,60,94,0.3);
 }
-.btn-primary:active {
-  transform: translateY(0);
-}
-
 .btn-gold {
   transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
-.btn-gold:hover {
+.btn-gold:hover:not(:disabled) {
   background: #b8963f !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(200,169,81,0.4);
@@ -115,7 +103,7 @@ input, select, textarea { font-family: inherit; }
   box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
 }
 
-/* Skeleton loading */
+/* Skeleton */
 .skeleton {
   background: linear-gradient(90deg, #e2e8f0 25%, #f7fafc 50%, #e2e8f0 75%);
   background-size: 200% 100%;
@@ -123,15 +111,12 @@ input, select, textarea { font-family: inherit; }
   border-radius: 6px;
 }
 
-/* Navbar link hover */
+/* Navbar links */
 .nav-link {
   transition: color 0.2s ease, opacity 0.2s ease;
   opacity: 0.85;
 }
-.nav-link:hover {
-  opacity: 1;
-  color: #c8a951 !important;
-}
+.nav-link:hover { opacity: 1; color: #c8a951 !important; }
 
 /* Input focus */
 input:focus, select:focus, textarea:focus {
@@ -139,6 +124,34 @@ input:focus, select:focus, textarea:focus {
   border-color: #1a3c5e !important;
   box-shadow: 0 0 0 3px rgba(26,60,94,0.1);
   transition: all 0.2s ease;
+}
+
+/* Dark mode */
+body.dark-mode {
+  background: #0f1923;
+  color: #e2e8f0;
+}
+body.dark-mode .dm-card {
+  background: #1a2535 !important;
+  border-color: #2d3748 !important;
+  color: #e2e8f0 !important;
+}
+body.dark-mode .dm-nav {
+  background: #0d2137 !important;
+}
+body.dark-mode .dm-input {
+  background: #1a2535 !important;
+  border-color: #2d3748 !important;
+  color: #e2e8f0 !important;
+}
+body.dark-mode .dm-bg {
+  background: #0f1923 !important;
+}
+body.dark-mode .dm-text {
+  color: #a0aec0 !important;
+}
+body.dark-mode .dm-heading {
+  color: #e2e8f0 !important;
 }
 
 /* Mobile */
