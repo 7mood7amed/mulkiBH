@@ -6,14 +6,13 @@ export const LanguageProvider = ({ children }) => {
   const [lang, setLang] = useState(localStorage.getItem('lang') || 'en');
 
   useEffect(() => {
-    // Only set the lang attribute for font rendering
-    // Do NOT change document direction globally
     document.documentElement.lang = lang;
-    // Apply Arabic font class to body when Arabic
+    // Never change layout direction - keep LTR always
+    // Only font changes for Arabic
     if (lang === 'ar') {
-      document.body.setAttribute('dir', 'rtl');
+      document.body.classList.add('arabic');
     } else {
-      document.body.setAttribute('dir', 'ltr');
+      document.body.classList.remove('arabic');
     }
   }, [lang]);
 

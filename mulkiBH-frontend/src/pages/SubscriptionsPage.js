@@ -68,7 +68,7 @@ const SubscriptionsPage = () => {
   };
 
   if (verifying) return (
-    <div style={{ textAlign: 'center', padding: '80px 20px', direction: isRTL ? 'rtl' : 'ltr' }}>
+    <div style={{ textAlign: 'center', padding: '80px 20px',  }}>
       <div style={{ fontSize: '48px', marginBottom: '16px', animation: 'spin 1s linear infinite', display: 'inline-block' }}>⏳</div>
       <h3 style={{ color: '#1a3c5e' }}>{isRTL ? 'جاري التحقق من الدفع...' : 'Verifying payment...'}</h3>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
@@ -76,7 +76,7 @@ const SubscriptionsPage = () => {
   );
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', background: '#f8f9fa', minHeight: 'calc(100vh - 64px)' }}>
+    <div style={{  background: '#f8f9fa', minHeight: 'calc(100vh - 64px)' }}>
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, #1a3c5e, #2d6a9f)', padding: '40px 20px', textAlign: 'center', color: 'white' }}>
         <h2 className="fade-in-up" style={{ fontSize: 'clamp(20px, 4vw, 28px)', marginBottom: '8px' }}>{t('subscriptions')}</h2>

@@ -145,7 +145,7 @@ const CreatePropertyPage = () => {
   const sectionStyle = { background: 'white', padding: '24px', borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', marginBottom: '20px' };
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '800px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
+    <div style={{  maxWidth: '800px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#1a3c5e', cursor: 'pointer', marginBottom: '16px', fontSize: '15px' }}>← {t('back')}</button>
       <h2 style={{ color: '#1a3c5e', marginBottom: '8px' }}>
         {isEdit ? (isRTL ? 'تعديل العقار' : 'Edit Property') : (isRTL ? 'إضافة عقار جديد' : 'Add New Property')}

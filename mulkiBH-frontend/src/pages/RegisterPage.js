@@ -53,7 +53,7 @@ const RegisterPage = () => {
         background: 'white', padding: 'clamp(24px, 5vw, 40px)',
         borderRadius: '16px', width: '100%', maxWidth: '480px',
         boxShadow: '0 25px 60px rgba(0,0,0,0.3)',
-        direction: isRTL ? 'rtl' : 'ltr'
+        
       }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
           <div style={{ fontSize: '40px', marginBottom: '8px' }}>🏠</div>

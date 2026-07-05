@@ -42,7 +42,7 @@ const LoginPage = () => {
         background: 'white', padding: 'clamp(24px, 5vw, 40px)',
         borderRadius: '16px', width: '100%', maxWidth: '420px',
         boxShadow: '0 25px 60px rgba(0,0,0,0.3)',
-        direction: isRTL ? 'rtl' : 'ltr'
+        
       }}>
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: '28px' }}>

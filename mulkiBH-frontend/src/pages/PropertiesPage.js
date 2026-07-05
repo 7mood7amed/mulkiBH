@@ -128,7 +128,7 @@ const PropertiesPage = () => {
   );
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', minHeight: 'calc(100vh - 64px)', background: bgColor }} className="dm-bg">
+    <div style={{  minHeight: 'calc(100vh - 64px)', background: bgColor }} className="dm-bg">
       {/* Mobile filter bar */}
       <div style={{ padding: '12px 16px', background: cardBg, borderBottom: `1px solid ${borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} className="dm-card">
         <h2 style={{ margin: 0, color: '#1a3c5e', fontSize: '17px' }} className="dm-heading">

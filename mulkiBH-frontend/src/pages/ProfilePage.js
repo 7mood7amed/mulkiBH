@@ -78,7 +78,7 @@ const ProfilePage = () => {
   ];
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '700px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
+    <div style={{  maxWidth: '700px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
 
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, #1a3c5e, #2d6a9f)', borderRadius: '14px', padding: '28px', color: 'white', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '20px' }}>

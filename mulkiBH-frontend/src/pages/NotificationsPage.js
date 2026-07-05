@@ -35,7 +35,7 @@ const NotificationsPage = () => {
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', maxWidth: '700px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
+    <div style={{  maxWidth: '700px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
         <div>
           <h2 style={{ color: '#1a3c5e', margin: '0 0 4px', fontSize: 'clamp(18px, 3vw, 24px)' }}>{t('notifications')}</h2>

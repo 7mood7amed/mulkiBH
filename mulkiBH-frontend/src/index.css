@@ -13,8 +13,8 @@ body {
   transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Arabic font */
-body[dir="rtl"] {
+/* Arabic font - only font changes, not layout direction */
+body.arabic {
   font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
 }
 

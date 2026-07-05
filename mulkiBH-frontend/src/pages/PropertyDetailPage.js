@@ -88,7 +88,7 @@ const PropertyDetailPage = () => {
   const statusColors = { available: '#48bb78', rented: '#4299e1', sold: '#e53e3e', pending: '#ed8936' };
 
   return (
-    <div style={{ direction: isRTL ? 'rtl' : 'ltr', background: bgColor, minHeight: 'calc(100vh - 64px)' }} className="dm-bg fade-in">
+    <div style={{  background: bgColor, minHeight: 'calc(100vh - 64px)' }} className="dm-bg fade-in">
       {/* Breadcrumb */}
       <div style={{ background: cardBg, padding: '12px 20px', borderBottom: `1px solid ${isDark ? '#2d3748' : '#eee'}` }} className="dm-card">
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px', color: subColor }}>
