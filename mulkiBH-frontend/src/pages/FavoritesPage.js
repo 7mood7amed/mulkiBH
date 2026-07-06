@@ -5,7 +5,6 @@ import { useFavorites } from '../context/FavoritesContext';
 import { useLang } from '../context/LanguageContext';
 import { useThemeColors } from '../hooks/useThemeColors';
 import { useT } from '../hooks/useTranslation';
-import PageHeader from '../components/common/PageHeader';
 
 const FavoritesPage = () => {
   const t = useT();
@@ -16,10 +15,6 @@ const FavoritesPage = () => {
 
   return (
     <div style={{ background: bg, minHeight: 'calc(100vh - 68px)' }}>
-      <PageHeader
-        title={lang === 'ar' ? 'المفضلة' : 'Saved Properties'}
-        subtitle={`${favorites.length} ${lang === 'ar' ? 'عقار محفوظ' : 'saved properties'}`}
-      />
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '28px 24px' }}>
         {favorites.length === 0 ? (

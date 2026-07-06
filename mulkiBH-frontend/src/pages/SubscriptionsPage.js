@@ -7,7 +7,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLang } from '../context/LanguageContext';
 import { useThemeColors } from '../hooks/useThemeColors';
 import { useT } from '../hooks/useTranslation';
-import PageHeader from '../components/common/PageHeader';
 
 const planConfig = {
   free:   { icon: '🆓', color: '#718096', gradient: 'linear-gradient(135deg, #f8f9fa, #e2e8f0)' },
@@ -71,10 +70,6 @@ const SubscriptionsPage = () => {
 
   return (
     <div style={{ background: bg, minHeight: 'calc(100vh - 68px)' }}>
-      <PageHeader
-        title={lang === 'ar' ? 'خطط الاشتراك' : 'Subscription Plans'}
-        subtitle={current?.plan_name ? (lang === 'ar' ? `خطتك الحالية: ${current.plan_name}` : `Current plan: ${current.plan_name}`) : (lang === 'ar' ? 'اختر الخطة المناسبة لك' : 'Choose the plan that works for you')}
-      />
 
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
         {(message || error) && (

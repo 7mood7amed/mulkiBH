@@ -6,7 +6,6 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import { useThemeColors } from '../hooks/useThemeColors';
 import { useT } from '../hooks/useTranslation';
-import PageHeader from '../components/common/PageHeader';
 
 const statusConfig = {
   available: { color: '#48bb78', label: 'Available' },

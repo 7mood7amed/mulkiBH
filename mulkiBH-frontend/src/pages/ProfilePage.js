@@ -6,7 +6,6 @@ import { useAuth } from '../context/AuthContext';
 import { useT } from '../hooks/useTranslation';
 import { useLang } from '../context/LanguageContext';
 import { useThemeColors } from '../hooks/useThemeColors';
-import PageHeader from '../components/common/PageHeader';
 
 const ProfilePage = () => {
   const t = useT();
@@ -50,7 +49,6 @@ const ProfilePage = () => {
 
   return (
     <div style={{ background: bg, minHeight: 'calc(100vh - 68px)' }}>
-      <PageHeader title={lang === 'ar' ? 'الملف الشخصي' : 'My Profile'} subtitle={user.email} />
 
       <div style={{ maxWidth: '680px', margin: '0 auto', padding: '28px 24px' }}>
         {/* Avatar card */}
