@@ -3,159 +3,141 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
-import { useT } from '../hooks/useTranslation';
 import { useLang } from '../context/LanguageContext';
+import { useThemeColors } from '../hooks/useThemeColors';
+import Logo from '../components/common/Logo';
 
 const RegisterPage = () => {
-  const t = useT();
-  const { isRTL } = useLang();
+  const { lang } = useLang();
+  const { surface, border, subtext, isDark } = useThemeColors();
   const { loginUser } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', full_name: '', phone: '', whatsapp: '', role: 'visitor', agency_name: '', password: '', password2: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrors({});
+    e.preventDefault(); setLoading(true); setErrors({});
     try {
       const res = await register(form);
       loginUser(res.data.token, res.data.user);
       navigate('/dashboard');
-    } catch (err) {
-      setErrors(err.response?.data || {});
-      setStep(1);
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { setErrors(err.response?.data || {}); } finally { setLoading(false); }
   };
 
-  const inputStyle = { width: '100%', padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', boxSizing: 'border-box', fontSize: '14px' };
-  const labelStyle = { display: 'block', marginBottom: '6px', fontWeight: '600', fontSize: '14px', color: '#4a5568' };
-  const errorStyle = { color: '#e53e3e', fontSize: '12px', marginTop: '4px' };
+  const inputStyle = { width: '100%', padding: '11px 14px', border: `1px solid ${errors ? border : border}`, borderRadius: '8px', fontSize: '14px', fontFamily: 'inherit', background: isDark ? '#0a1929' : 'white', color: isDark ? '#e2e8f0' : '#2d3748', boxSizing: 'border-box' };
+  const labelStyle = { display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '12px', color: subtext, textTransform: 'uppercase', letterSpacing: '0.5px' };
+  const errStyle = { color: '#e53e3e', fontSize: '12px', marginTop: '4px' };
 
-  const roleOptions = [
-    { value: 'visitor', icon: '👤', label: t('visitor'), desc: isRTL ? 'تصفح وأضف طلبات' : 'Browse & post orders' },
-    { value: 'owner', icon: '🏠', label: t('owner'), desc: isRTL ? 'انشر عقاراتك' : 'List your properties' },
-    { value: 'agency', icon: '🏢', label: t('agency'), desc: isRTL ? 'مكتب عقاري' : 'Real estate agency' },
+  const roles = [
+    { value: 'visitor', icon: '👤', label: lang === 'ar' ? 'زائر' : 'Visitor', desc: lang === 'ar' ? 'تصفح وأضف طلبات' : 'Browse & request' },
+    { value: 'owner', icon: '🏠', label: lang === 'ar' ? 'مالك' : 'Owner', desc: lang === 'ar' ? 'انشر عقاراتك' : 'List properties' },
+    { value: 'agency', icon: '🏢', label: lang === 'ar' ? 'وكالة' : 'Agency', desc: lang === 'ar' ? 'مكتب عقاري' : 'Real estate firm' },
   ];
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'linear-gradient(135deg, #1a3c5e 0%, #2d6a9f 100%)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '20px'
-    }}>
-      <div className="fade-in-up" style={{
-        background: 'white', padding: 'clamp(24px, 5vw, 40px)',
-        borderRadius: '16px', width: '100%', maxWidth: '480px',
-        boxShadow: '0 25px 60px rgba(0,0,0,0.3)',
-        
-      }}>
+    <div style={{ minHeight: '100vh', background: isDark ? '#060e18' : '#0f2640', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px 16px', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '50%', border: '1px solid rgba(200,169,81,0.07)', pointerEvents: 'none' }} />
+
+      <div className="fade-in-up" style={{ background: isDark ? '#0a1929' : 'white', padding: 'clamp(24px,4vw,40px)', borderRadius: '20px', width: '100%', maxWidth: '500px', border: `1px solid ${isDark ? '#1a3c5e' : 'rgba(200,169,81,0.15)'}`, boxShadow: '0 32px 80px rgba(0,0,0,0.4)' }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-          <div style={{ fontSize: '40px', marginBottom: '8px' }}>🏠</div>
-          <h2 style={{ color: '#1a3c5e', margin: '0 0 4px', fontSize: '22px' }}>{t('registerTitle')}</h2>
-          <p style={{ color: '#718096', margin: 0, fontSize: '14px' }}>MulkiBH</p>
+          <div style={{ display: 'inline-flex', marginBottom: '16px' }}>
+            <Logo size="sm" dark={isDark} />
+          </div>
+          <h2 className="heading-display" style={{ fontSize: '22px', color: isDark ? '#f7fafc' : '#0f2640', marginBottom: '4px' }}>
+            {lang === 'ar' ? 'إنشاء حساب جديد' : 'Create your account'}
+          </h2>
+          <p style={{ color: subtext, fontSize: '13px' }}>{lang === 'ar' ? 'انضم إلى ملكي اليوم' : 'Join MulkiBH today — it\'s free'}</p>
         </div>
 
-        {/* Error */}
         {errors.non_field_errors && (
-          <div style={{ background: '#fff5f5', color: '#e53e3e', padding: '12px', borderRadius: '8px', marginBottom: '16px', fontSize: '14px', border: '1px solid #fed7d7' }}>
+          <div style={{ background: '#fff5f5', color: '#c53030', padding: '10px 14px', borderRadius: '8px', marginBottom: '16px', fontSize: '13px', border: '1px solid #fed7d7' }}>
             ⚠️ {errors.non_field_errors}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* Role selector */}
-          <div style={{ marginBottom: '16px' }}>
-            <label style={labelStyle}>{t('role')}</label>
+          {/* Role */}
+          <div style={{ marginBottom: '18px' }}>
+            <label style={labelStyle}>{lang === 'ar' ? 'نوع الحساب' : 'Account type'}</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-              {roleOptions.map(opt => (
-                <div key={opt.value} onClick={() => setForm({...form, role: opt.value})} style={{
-                  padding: '10px 8px', borderRadius: '8px', textAlign: 'center', cursor: 'pointer',
-                  border: '2px solid', borderColor: form.role === opt.value ? '#1a3c5e' : '#e2e8f0',
-                  background: form.role === opt.value ? '#ebf8ff' : 'white',
-                  transition: 'all 0.2s ease'
+              {roles.map(r => (
+                <div key={r.value} onClick={() => setForm({...form, role: r.value})} style={{
+                  padding: '12px 8px', borderRadius: '10px', textAlign: 'center', cursor: 'pointer',
+                  border: `2px solid ${form.role === r.value ? '#c8a951' : border}`,
+                  background: form.role === r.value ? (isDark ? 'rgba(200,169,81,0.08)' : 'rgba(200,169,81,0.06)') : 'transparent',
+                  transition: 'all 0.2s',
                 }}>
-                  <div style={{ fontSize: '20px', marginBottom: '2px' }}>{opt.icon}</div>
-                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#1a3c5e' }}>{opt.label}</div>
+                  <div style={{ fontSize: '22px', marginBottom: '4px' }}>{r.icon}</div>
+                  <div style={{ fontSize: '12px', fontWeight: '700', color: form.role === r.value ? '#c8a951' : (isDark ? '#e2e8f0' : '#0f2640') }}>{r.label}</div>
+                  <div style={{ fontSize: '10px', color: subtext, marginTop: '2px' }}>{r.desc}</div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Full Name */}
           <div style={{ marginBottom: '14px' }}>
-            <label style={labelStyle}>{t('fullName')}</label>
+            <label style={labelStyle}>{lang === 'ar' ? 'الاسم الكامل' : 'Full name'}</label>
             <input value={form.full_name} onChange={e => setForm({...form, full_name: e.target.value})} style={inputStyle} required />
-            {errors.full_name && <p style={errorStyle}>{errors.full_name}</p>}
+            {errors.full_name && <p style={errStyle}>{errors.full_name}</p>}
           </div>
 
-          {/* Email */}
           <div style={{ marginBottom: '14px' }}>
-            <label style={labelStyle}>{t('email')}</label>
+            <label style={labelStyle}>{lang === 'ar' ? 'البريد الإلكتروني' : 'Email'}</label>
             <input type="email" value={form.email} onChange={e => setForm({...form, email: e.target.value})} style={inputStyle} required />
-            {errors.email && <p style={errorStyle}>{errors.email}</p>}
+            {errors.email && <p style={errStyle}>{errors.email}</p>}
           </div>
 
-          {/* Phone & WhatsApp */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '14px' }}>
             <div>
-              <label style={labelStyle}>{t('phone')}</label>
+              <label style={labelStyle}>{lang === 'ar' ? 'الهاتف' : 'Phone'}</label>
               <input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} style={inputStyle} />
             </div>
             <div>
-              <label style={labelStyle}>{t('whatsapp')}</label>
+              <label style={labelStyle}>WhatsApp</label>
               <input value={form.whatsapp} onChange={e => setForm({...form, whatsapp: e.target.value})} style={inputStyle} />
             </div>
           </div>
 
-          {/* Agency name */}
           {form.role === 'agency' && (
             <div style={{ marginBottom: '14px' }}>
-              <label style={labelStyle}>{t('agencyName')}</label>
+              <label style={labelStyle}>{lang === 'ar' ? 'اسم المكتب' : 'Agency name'}</label>
               <input value={form.agency_name} onChange={e => setForm({...form, agency_name: e.target.value})} style={inputStyle} required />
             </div>
           )}
 
-          {/* Password */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
             <div>
-              <label style={labelStyle}>{t('password')}</label>
+              <label style={labelStyle}>{lang === 'ar' ? 'كلمة المرور' : 'Password'}</label>
               <input type="password" value={form.password} onChange={e => setForm({...form, password: e.target.value})} style={inputStyle} required />
-              {errors.password && <p style={errorStyle}>{errors.password}</p>}
+              {errors.password && <p style={errStyle}>{errors.password}</p>}
             </div>
             <div>
-              <label style={labelStyle}>{t('confirmPassword')}</label>
+              <label style={labelStyle}>{lang === 'ar' ? 'تأكيد المرور' : 'Confirm'}</label>
               <input type="password" value={form.password2} onChange={e => setForm({...form, password2: e.target.value})} style={inputStyle} required />
-              {errors.password2 && <p style={errorStyle}>{errors.password2}</p>}
+              {errors.password2 && <p style={errStyle}>{errors.password2}</p>}
             </div>
           </div>
 
-          <button type="submit" disabled={loading} className="btn-primary" style={{
-            width: '100%', padding: '13px', background: '#1a3c5e', color: 'white',
-            border: 'none', borderRadius: '8px', fontSize: '15px', cursor: 'pointer', fontWeight: '700'
-          }}>
+          <button type="submit" disabled={loading} className="btn-navy" style={{ width: '100%', padding: '13px', fontSize: '15px', borderRadius: '10px', fontWeight: '700', background: loading ? '#718096' : '#0f2640' }}>
             {loading ? (
               <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                <span style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} />
-                {isRTL ? 'جاري الإنشاء...' : 'Creating account...'}
+                <span style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid white', borderRadius: '50%', animation: 'spin 0.8s linear infinite', display: 'inline-block' }} />
+                {lang === 'ar' ? 'جاري الإنشاء...' : 'Creating account...'}
               </span>
-            ) : t('register')}
+            ) : (lang === 'ar' ? 'إنشاء الحساب' : 'Create account')}
           </button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: '#718096' }}>
-          {t('alreadyHaveAccount')}{' '}
-          <Link to="/login" style={{ color: '#1a3c5e', fontWeight: '700' }}>{t('login')}</Link>
-        </p>
+        <div style={{ textAlign: 'center', marginTop: '16px', paddingTop: '16px', borderTop: `1px solid ${border}` }}>
+          <p style={{ fontSize: '14px', color: subtext }}>
+            {lang === 'ar' ? 'لديك حساب بالفعل؟ ' : 'Already have an account? '}
+            <Link to="/login" style={{ color: '#c8a951', fontWeight: '700', textDecoration: 'none' }}>{lang === 'ar' ? 'تسجيل الدخول' : 'Sign in'}</Link>
+          </p>
+        </div>
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 };
-
 export default RegisterPage;

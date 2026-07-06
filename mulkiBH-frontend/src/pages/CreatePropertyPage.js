@@ -5,6 +5,7 @@ import { createProperty, updateProperty, getProperty, getCategories, getGovernor
 import { useAuth } from '../context/AuthContext';
 import { useT } from '../hooks/useTranslation';
 import { useLang } from '../context/LanguageContext';
+import { useThemeColors } from '../hooks/useThemeColors';
 
 const CreatePropertyPage = () => {
   const t = useT();
@@ -146,8 +147,8 @@ const CreatePropertyPage = () => {
 
   return (
     <div style={{  maxWidth: '800px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
-      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#1a3c5e', cursor: 'pointer', marginBottom: '16px', fontSize: '15px' }}>← {t('back')}</button>
-      <h2 style={{ color: '#1a3c5e', marginBottom: '8px' }}>
+      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#0f2640', cursor: 'pointer', marginBottom: '16px', fontSize: '15px' }}>← {t('back')}</button>
+      <h2 className="heading-display" style={{color: \'#0f2640\', marginBottom: '8px' }}>
         {isEdit ? (isRTL ? 'تعديل العقار' : 'Edit Property') : (isRTL ? 'إضافة عقار جديد' : 'Add New Property')}
       </h2>
       <p style={{ color: '#718096', marginBottom: '28px' }}>{isRTL ? 'أدخل تفاصيل العقار بالكامل' : 'Fill in all property details'}</p>
@@ -156,7 +157,7 @@ const CreatePropertyPage = () => {
 
         {/* Basic Info */}
         <div style={sectionStyle}>
-          <h3 style={{ color: '#1a3c5e', marginBottom: '20px' }}>{isRTL ? 'المعلومات الأساسية' : 'Basic Information'}</h3>
+          <h3 style={{ color: '#0f2640', marginBottom: '20px' }}>{isRTL ? 'المعلومات الأساسية' : 'Basic Information'}</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
             <div>
               <label style={labelStyle}>Title (English) *</label>
@@ -183,7 +184,7 @@ const CreatePropertyPage = () => {
 
         {/* Listing Type & Price */}
         <div style={sectionStyle}>
-          <h3 style={{ color: '#1a3c5e', marginBottom: '20px' }}>{isRTL ? 'النوع والسعر' : 'Type & Price'}</h3>
+          <h3 style={{ color: '#0f2640', marginBottom: '20px' }}>{isRTL ? 'النوع والسعر' : 'Type & Price'}</h3>
           <div style={{ marginBottom: '16px' }}>
             <label style={labelStyle}>{t('listingType')} *</label>
             <div style={{ display: 'flex', gap: '12px' }}>
@@ -214,7 +215,7 @@ const CreatePropertyPage = () => {
 
         {/* Category & Location */}
         <div style={sectionStyle}>
-          <h3 style={{ color: '#1a3c5e', marginBottom: '20px' }}>{isRTL ? 'الفئة والموقع' : 'Category & Location'}</h3>
+          <h3 style={{ color: '#0f2640', marginBottom: '20px' }}>{isRTL ? 'الفئة والموقع' : 'Category & Location'}</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
             <div>
               <label style={labelStyle}>{t('category')} *</label>
@@ -266,7 +267,7 @@ const CreatePropertyPage = () => {
 
         {/* Property Details */}
         <div style={sectionStyle}>
-          <h3 style={{ color: '#1a3c5e', marginBottom: '20px' }}>{isRTL ? 'تفاصيل العقار' : 'Property Details'}</h3>
+          <h3 style={{ color: '#0f2640', marginBottom: '20px' }}>{isRTL ? 'تفاصيل العقار' : 'Property Details'}</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
             <div>
               <label style={labelStyle}>{t('bedrooms')}</label>
@@ -285,7 +286,7 @@ const CreatePropertyPage = () => {
 
         {/* Images */}
         <div style={sectionStyle}>
-          <h3 style={{ color: '#1a3c5e', marginBottom: '20px' }}>{isRTL ? 'صور العقار' : 'Property Images'}</h3>
+          <h3 style={{ color: '#0f2640', marginBottom: '20px' }}>{isRTL ? 'صور العقار' : 'Property Images'}</h3>
           <label style={{ display: 'block', padding: '20px', border: '2px dashed #ddd', borderRadius: '8px', textAlign: 'center', cursor: 'pointer', color: '#718096' }}>
             📷 {isRTL ? 'اضغط لرفع الصور' : 'Click to upload images'}
             <input type="file" multiple accept="image/*" onChange={handleImages} style={{ display: 'none' }} />
@@ -295,7 +296,7 @@ const CreatePropertyPage = () => {
               {previews.map((src, i) => (
                 <div key={i} style={{ position: 'relative' }}>
                   <img src={src} alt="" style={{ width: '100px', height: '75px', objectFit: 'cover', borderRadius: '6px' }} />
-                  {i === 0 && <span style={{ position: 'absolute', bottom: '4px', left: '4px', background: '#1a3c5e', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '4px' }}>Main</span>}
+                  {i === 0 && <span style={{ position: 'absolute', bottom: '4px', left: '4px', background: '#0f2640', color: 'white', fontSize: '10px', padding: '2px 6px', borderRadius: '4px' }}>Main</span>}
                 </div>
               ))}
             </div>
@@ -303,7 +304,7 @@ const CreatePropertyPage = () => {
         </div>
 
         <button type="submit" disabled={loading} style={{
-          width: '100%', padding: '14px', background: '#1a3c5e', color: 'white',
+          width: '100%', padding: '14px', background: '#0f2640', color: 'white',
           border: 'none', borderRadius: '8px', fontSize: '16px', cursor: 'pointer', fontWeight: '600'
         }}>
           {loading ? t('loading') : isEdit ? (isRTL ? 'حفظ التعديلات' : 'Save Changes') : (isRTL ? 'نشر العقار' : 'Post Property')}

@@ -5,6 +5,7 @@ import { getCategories, getGovernorates, getCities } from '../api/properties';
 import { useAuth } from '../context/AuthContext';
 import { useT } from '../hooks/useTranslation';
 import { useLang } from '../context/LanguageContext';
+import { useThemeColors } from '../hooks/useThemeColors';
 
 const CreateOrderPage = () => {
   const t = useT();
@@ -67,7 +68,7 @@ const CreateOrderPage = () => {
       margin: '0 auto',
       padding: '20px 16px',
     }}>
-      <h2 style={{ color: '#1a3c5e', marginBottom: '8px', fontSize: 'clamp(18px, 4vw, 24px)' }}>{t('orderTitle')}</h2>
+      <h2 className="heading-display" style={{color: \'#0f2640\', marginBottom: '8px', fontSize: 'clamp(18px, 4vw, 24px)' }}>{t('orderTitle')}</h2>
       <p style={{ color: '#718096', marginBottom: '24px', fontSize: '14px' }}>{t('orderSubtitle')}</p>
 
       <form onSubmit={handleSubmit} style={{
@@ -173,7 +174,7 @@ const CreateOrderPage = () => {
         </div>
 
         <button type="submit" disabled={loading} style={{
-          width: '100%', padding: '12px', background: '#1a3c5e', color: 'white',
+          width: '100%', padding: '12px', background: '#0f2640', color: 'white',
           border: 'none', borderRadius: '6px', fontSize: '16px',
           cursor: 'pointer', fontWeight: '600'
         }}>

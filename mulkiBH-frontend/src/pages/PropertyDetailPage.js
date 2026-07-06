@@ -94,7 +94,7 @@ const PropertyDetailPage = () => {
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', gap: '8px', alignItems: 'center', fontSize: '13px', color: subColor }}>
           <span onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>🏠</span>
           <span>›</span>
-          <span onClick={() => navigate('/properties')} style={{ cursor: 'pointer', color: '#1a3c5e' }}>{t('properties')}</span>
+          <span onClick={() => navigate('/properties')} style={{ cursor: 'pointer', color: '#0f2640' }}>{t('properties')}</span>
           <span>›</span>
           <span style={{ color: textColor }}>{lang === 'ar' ? property.title_ar : property.title_en}</span>
         </div>
@@ -214,7 +214,7 @@ const PropertyDetailPage = () => {
         {/* Contact Form */}
         {!isOwner && (property.owner_whatsapp || property.owner_phone) && (
           <div style={{ background: cardBg, borderRadius: '12px', padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', marginBottom: '32px' }} className="dm-card">
-            <h3 style={{ color: '#1a3c5e', marginBottom: '20px', fontSize: '18px' }} className="dm-heading">
+            <h3 style={{ color: '#0f2640', marginBottom: '20px', fontSize: '18px' }} className="dm-heading">
               💬 {isRTL ? 'تواصل مع المالك' : 'Contact Owner'}
             </h3>
             {contactSent ? (
