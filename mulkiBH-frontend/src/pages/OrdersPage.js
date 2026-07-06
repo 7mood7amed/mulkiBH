@@ -32,15 +32,7 @@ const OrdersPage = () => {
 
   return (
     <div style={{ background: bg, minHeight: 'calc(100vh - 68px)' }}>
-      <PageHeader
-        title={user?.role === 'visitor' ? (lang === 'ar' ? 'طلباتي' : 'My Orders') : (lang === 'ar' ? 'الطلبات المفتوحة' : 'Open Orders')}
-        subtitle={!loading ? `${orders.length} ${lang === 'ar' ? 'طلب' : 'orders'}` : ''}
-        action={user?.role === 'visitor' && (
-          <button onClick={() => navigate('/orders/create')} className="btn-gold" style={{ padding: '9px 20px', borderRadius: '8px', fontSize: '13px', fontWeight: '700' }}>
-            + {lang === 'ar' ? 'طلب جديد' : 'New Order'}
-          </button>
-        )}
-      />
+      
 
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '28px 24px' }}>
         {loading ? (

@@ -68,7 +68,7 @@ const CreateOrderPage = () => {
       margin: '0 auto',
       padding: '20px 16px',
     }}>
-      <h2 className="heading-display" style={{color: \'#0f2640\', marginBottom: '8px', fontSize: 'clamp(18px, 4vw, 24px)' }}>{t('orderTitle')}</h2>
+      <h2 className="heading-display" style={{ color: '#0f2640', marginBottom: '8px', fontSize: 'clamp(18px, 4vw, 24px)' }}>{t('orderTitle')}</h2>
       <p style={{ color: '#718096', marginBottom: '24px', fontSize: '14px' }}>{t('orderSubtitle')}</p>
 
       <form onSubmit={handleSubmit} style={{

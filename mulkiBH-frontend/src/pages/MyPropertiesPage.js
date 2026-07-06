@@ -37,15 +37,7 @@ const MyPropertiesPage = () => {
 
   return (
     <div style={{ background: bg, minHeight: 'calc(100vh - 68px)' }}>
-      <PageHeader
-        title={lang === 'ar' ? 'عقاراتي' : 'My Properties'}
-        subtitle={!loading ? `${properties.length} ${lang === 'ar' ? 'عقار' : 'listings'}` : ''}
-        action={
-          <button onClick={() => navigate('/properties/create')} className="btn-gold" style={{ padding: '9px 20px', borderRadius: '8px', fontSize: '13px', fontWeight: '700', boxShadow: '0 4px 12px rgba(200,169,81,0.4)' }}>
-            + {lang === 'ar' ? 'إضافة عقار' : 'Add Property'}
-          </button>
-        }
-      />
+      
 
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '28px 24px' }}>
         {loading ? (

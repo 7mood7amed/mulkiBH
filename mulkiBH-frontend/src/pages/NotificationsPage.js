@@ -34,15 +34,7 @@ const NotificationsPage = () => {
 
   return (
     <div style={{ background: bg, minHeight: 'calc(100vh - 68px)' }}>
-      <PageHeader
-        title={lang === 'ar' ? 'الإشعارات' : 'Notifications'}
-        subtitle={unreadCount > 0 ? `${unreadCount} ${lang === 'ar' ? 'غير مقروء' : 'unread'}` : ''}
-        action={unreadCount > 0 && (
-          <button onClick={handleMarkAll} style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: '600', fontFamily: 'inherit' }}>
-            ✓ {lang === 'ar' ? 'تحديد الكل مقروء' : 'Mark all read'}
-          </button>
-        )}
-      />
+      
 
       <div style={{ maxWidth: '720px', margin: '0 auto', padding: '28px 24px' }}>
         {loading ? (
