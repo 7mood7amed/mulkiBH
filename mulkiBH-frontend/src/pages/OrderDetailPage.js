@@ -72,7 +72,7 @@ const OrderDetailPage = () => {
       <div style={{ background: 'white', borderRadius: '12px', padding: 'clamp(16px, 4vw, 28px)', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', marginBottom: '24px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
           <div>
-            <h2 className="heading-display" style={{color: \'#0f2640\', margin: '0 0 8px' }}>
+            <h2 className="heading-display" style={{color: '#0f2640', margin: '0 0 8px' }}>
               {isRTL ? `طلب عقار #${order.id}` : `Property Order #${order.id}`}
             </h2>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>

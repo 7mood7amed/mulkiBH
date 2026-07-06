@@ -148,7 +148,7 @@ const CreatePropertyPage = () => {
   return (
     <div style={{  maxWidth: '800px', margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#0f2640', cursor: 'pointer', marginBottom: '16px', fontSize: '15px' }}>← {t('back')}</button>
-      <h2 className="heading-display" style={{color: \'#0f2640\', marginBottom: '8px' }}>
+      <h2 className="heading-display" style={{color: '#0f2640', marginBottom: '8px' }}>
         {isEdit ? (isRTL ? 'تعديل العقار' : 'Edit Property') : (isRTL ? 'إضافة عقار جديد' : 'Add New Property')}
       </h2>
       <p style={{ color: '#718096', marginBottom: '28px' }}>{isRTL ? 'أدخل تفاصيل العقار بالكامل' : 'Fill in all property details'}</p>

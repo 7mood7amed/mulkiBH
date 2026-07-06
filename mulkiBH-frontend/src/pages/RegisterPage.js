@@ -9,7 +9,7 @@ import Logo from '../components/common/Logo';
 
 const RegisterPage = () => {
   const { lang } = useLang();
-  const { surface, border, subtext, isDark } = useThemeColors();
+  const { border, subtext, heading, isDark } = useThemeColors();
   const { loginUser } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', full_name: '', phone: '', whatsapp: '', role: 'visitor', agency_name: '', password: '', password2: '' });
@@ -25,8 +25,16 @@ const RegisterPage = () => {
     } catch (err) { setErrors(err.response?.data || {}); } finally { setLoading(false); }
   };
 
-  const inputStyle = { width: '100%', padding: '11px 14px', border: `1px solid ${errors ? border : border}`, borderRadius: '8px', fontSize: '14px', fontFamily: 'inherit', background: isDark ? '#0a1929' : 'white', color: isDark ? '#e2e8f0' : '#2d3748', boxSizing: 'border-box' };
-  const labelStyle = { display: 'block', marginBottom: '5px', fontWeight: '600', fontSize: '12px', color: subtext, textTransform: 'uppercase', letterSpacing: '0.5px' };
+  const inputStyle = {
+    width: '100%', padding: '11px 14px', border: `1px solid ${border}`,
+    borderRadius: '8px', fontSize: '14px', fontFamily: 'inherit',
+    background: isDark ? '#0a1929' : 'white',
+    color: isDark ? '#e2e8f0' : '#2d3748', boxSizing: 'border-box',
+  };
+  const labelStyle = {
+    display: 'block', marginBottom: '5px', fontWeight: '600',
+    fontSize: '12px', color: subtext, textTransform: 'uppercase', letterSpacing: '0.5px',
+  };
   const errStyle = { color: '#e53e3e', fontSize: '12px', marginTop: '4px' };
 
   const roles = [
@@ -47,27 +55,23 @@ const RegisterPage = () => {
           <h2 className="heading-display" style={{ fontSize: '22px', color: isDark ? '#f7fafc' : '#0f2640', marginBottom: '4px' }}>
             {lang === 'ar' ? 'إنشاء حساب جديد' : 'Create your account'}
           </h2>
-          <p style={{ color: subtext, fontSize: '13px' }}>{lang === 'ar' ? 'انضم إلى ملكي اليوم' : 'Join MulkiBH today — it\'s free'}</p>
+          <p style={{ color: subtext, fontSize: '13px' }}>
+            {lang === 'ar' ? 'انضم إلى ملكي اليوم' : 'Join MulkiBH today — free to start'}
+          </p>
         </div>
 
         {errors.non_field_errors && (
           <div style={{ background: '#fff5f5', color: '#c53030', padding: '10px 14px', borderRadius: '8px', marginBottom: '16px', fontSize: '13px', border: '1px solid #fed7d7' }}>
-            ⚠️ {errors.non_field_errors}
+            {errors.non_field_errors}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* Role */}
           <div style={{ marginBottom: '18px' }}>
             <label style={labelStyle}>{lang === 'ar' ? 'نوع الحساب' : 'Account type'}</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
               {roles.map(r => (
-                <div key={r.value} onClick={() => setForm({...form, role: r.value})} style={{
-                  padding: '12px 8px', borderRadius: '10px', textAlign: 'center', cursor: 'pointer',
-                  border: `2px solid ${form.role === r.value ? '#c8a951' : border}`,
-                  background: form.role === r.value ? (isDark ? 'rgba(200,169,81,0.08)' : 'rgba(200,169,81,0.06)') : 'transparent',
-                  transition: 'all 0.2s',
-                }}>
+                <div key={r.value} onClick={() => setForm({...form, role: r.value})} style={{ padding: '12px 8px', borderRadius: '10px', textAlign: 'center', cursor: 'pointer', border: `2px solid ${form.role === r.value ? '#c8a951' : border}`, background: form.role === r.value ? (isDark ? 'rgba(200,169,81,0.08)' : 'rgba(200,169,81,0.06)') : 'transparent', transition: 'all 0.2s' }}>
                   <div style={{ fontSize: '22px', marginBottom: '4px' }}>{r.icon}</div>
                   <div style={{ fontSize: '12px', fontWeight: '700', color: form.role === r.value ? '#c8a951' : (isDark ? '#e2e8f0' : '#0f2640') }}>{r.label}</div>
                   <div style={{ fontSize: '10px', color: subtext, marginTop: '2px' }}>{r.desc}</div>
@@ -113,7 +117,7 @@ const RegisterPage = () => {
               {errors.password && <p style={errStyle}>{errors.password}</p>}
             </div>
             <div>
-              <label style={labelStyle}>{lang === 'ar' ? 'تأكيد المرور' : 'Confirm'}</label>
+              <label style={labelStyle}>{lang === 'ar' ? 'تأكيد' : 'Confirm'}</label>
               <input type="password" value={form.password2} onChange={e => setForm({...form, password2: e.target.value})} style={inputStyle} required />
               {errors.password2 && <p style={errStyle}>{errors.password2}</p>}
             </div>
@@ -131,8 +135,10 @@ const RegisterPage = () => {
 
         <div style={{ textAlign: 'center', marginTop: '16px', paddingTop: '16px', borderTop: `1px solid ${border}` }}>
           <p style={{ fontSize: '14px', color: subtext }}>
-            {lang === 'ar' ? 'لديك حساب بالفعل؟ ' : 'Already have an account? '}
-            <Link to="/login" style={{ color: '#c8a951', fontWeight: '700', textDecoration: 'none' }}>{lang === 'ar' ? 'تسجيل الدخول' : 'Sign in'}</Link>
+            {lang === 'ar' ? 'لديك حساب؟ ' : 'Already have an account? '}
+            <Link to="/login" style={{ color: '#c8a951', fontWeight: '700', textDecoration: 'none' }}>
+              {lang === 'ar' ? 'تسجيل الدخول' : 'Sign in'}
+            </Link>
           </p>
         </div>
       </div>
