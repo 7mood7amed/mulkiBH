@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -35,10 +35,13 @@ const ProtectedRoute = ({ children, roles }) => {
   return children;
 };
 
-const AppRoutes = () => (
+const AppRoutes = () => {
+  const location = useLocation();
+  const hideShell = location.pathname === '/login';
+  return (
   <>
     <ProgressBar />
-    <Navbar />
+    {!hideShell && <Navbar />}
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
@@ -65,7 +68,8 @@ const AppRoutes = () => (
       <Route path="/favorites" element={<FavoritesPage />} />
     </Routes>
   </>
-);
+  );
+};
 
 function App() {
   return (

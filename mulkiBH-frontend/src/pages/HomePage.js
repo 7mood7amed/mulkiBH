@@ -1,10 +1,10 @@
 /* eslint-disable */
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useT } from '../hooks/useTranslation';
 import { useLang } from '../context/LanguageContext';
 import { useThemeColors } from '../hooks/useThemeColors';
 import { getCategories, getGovernorates } from '../api/properties';
+import Logo from '../components/common/Logo';
 
 const AnimatedCounter = ({ target, suffix = '' }) => {
   const [count, setCount] = useState(0);
@@ -32,13 +32,12 @@ const AnimatedCounter = ({ target, suffix = '' }) => {
 };
 
 const HomePage = () => {
-  const t = useT();
   const { lang } = useLang();
-  const { bg, surface, border, subtext, heading, isDark } = useThemeColors();
+  const { border, subtext, heading, isDark } = useThemeColors();
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [governorates, setGovernorates] = useState([]);
-  const [filters, setFilters] = useState({ listing_type: 'rent', search: '', category: '', governorate: '', price_max: '', bedrooms: '' });
+  const [filters, setFilters] = useState({ listing_type: 'sale', category: '', governorate: '', bedrooms: '', price_max: '' });
 
   useEffect(() => {
     getCategories().then(r => setCategories(r.data)).catch(() => {});
@@ -51,219 +50,311 @@ const HomePage = () => {
     navigate(`/properties?${params.toString()}`);
   };
 
-  const selectStyle = {
-    padding: '12px 14px', border: '1px solid #e2e8f0', borderRadius: '8px',
-    fontSize: '14px', background: 'white', cursor: 'pointer', outline: 'none',
-    width: '100%', color: '#4a5568', fontFamily: 'inherit',
-    transition: 'border-color 0.2s ease',
+  const fieldStyle = {
+    background: 'rgba(6,14,24,0.6)', border: '1px solid rgba(255,255,255,0.1)',
+    color: 'white', padding: '12px', borderRadius: '6px', fontSize: '14px',
+    outline: 'none', width: '100%', fontFamily: 'inherit', appearance: 'none',
+    boxSizing: 'border-box', transition: 'border-color 0.2s ease',
   };
+  const fieldLabelStyle = { color: 'rgba(255,255,255,0.6)', fontSize: '12px', fontWeight: '500', marginBottom: '8px', display: 'block' };
+
+  const stats = [
+    { num: '4', suffix: '', label: lang === 'ar' ? 'محافظات' : 'Governorates' },
+    { num: '40', suffix: '+', label: lang === 'ar' ? 'منطقة مغطاة' : 'Areas covered' },
+    { num: '2.5', suffix: 'k', label: lang === 'ar' ? 'عقار نشط' : 'Active Listings', static: true },
+    { num: '98', suffix: '%', label: lang === 'ar' ? 'رضا العملاء' : 'Client Satisfaction' },
+  ];
+
+  const features = [
+    {
+      icon: 'verified_user',
+      title: lang === 'ar' ? 'عقارات موثقة' : 'Verified Listings',
+      desc: lang === 'ar'
+        ? 'تخضع كل قائمة لعملية تحقق دقيقة تضمن صحة البيانات والامتثال القانوني لراحة بالك.'
+        : 'Every listing undergoes a rigorous verification process ensuring data accuracy and legal compliance for your peace of mind.',
+    },
+    {
+      icon: 'real_estate_agent',
+      title: lang === 'ar' ? 'وصول حصري' : 'Exclusive Access',
+      desc: lang === 'ar'
+        ? 'احصل على وصول مبكر للمشاريع خارج السوق والعقارات الفاخرة قبل وصولها للجمهور.'
+        : 'Gain early access to off-market developments and luxury estates before they reach the general public market.',
+    },
+    {
+      icon: 'insights',
+      title: lang === 'ar' ? 'تحليلات السوق' : 'Market Analytics',
+      desc: lang === 'ar'
+        ? 'رؤى مبنية على البيانات واتجاهات الأسعار التاريخية لتمكين قراراتك الاستثمارية في اقتصاد المملكة المزدهر.'
+        : "Data-driven insights and historical pricing trends to empower your investment decisions in the Kingdom's thriving economy.",
+    },
+  ];
 
   return (
-    <div style={{ background: bg }}>
+    <div>
 
       {/* ── Hero ── */}
-      <div style={{
-        background: isDark
-          ? 'linear-gradient(160deg, #060e18 0%, #0f2640 50%, #1a3c5e 100%)'
-          : 'linear-gradient(160deg, #0a1929 0%, #0f2640 40%, #1a3c5e 100%)',
+      <section style={{
+        background: 'radial-gradient(circle at top right, #1A3C5E 0%, #0F2640 40%, #060E18 100%)',
         color: 'white',
-        padding: '80px 20px 60px',
+        padding: '110px 20px 60px',
         textAlign: 'center',
         position: 'relative',
         overflow: 'hidden',
+        minHeight: '86vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}>
-        {/* Decorative circles */}
-        <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', borderRadius: '50%', border: '1px solid rgba(200,169,81,0.1)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '250px', height: '250px', borderRadius: '50%', border: '1px solid rgba(200,169,81,0.08)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '350px', height: '350px', borderRadius: '50%', border: '1px solid rgba(200,169,81,0.06)', pointerEvents: 'none' }} />
-
-        {/* Badge */}
-        <div className="fade-in" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.25)', borderRadius: '20px', padding: '5px 14px', marginBottom: '24px' }}>
-          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#c8a951', display: 'inline-block' }} />
-          <span style={{ fontSize: '12px', fontWeight: '600', color: '#c8a951', letterSpacing: '0.5px' }}>
-            {lang === 'ar' ? 'المنصة العقارية الأولى في البحرين' : "Bahrain's #1 Real Estate Platform"}
-          </span>
+        {/* Ambient glow blobs */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.2, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', width: '384px', height: '384px', background: '#c8a951', borderRadius: '50%', filter: 'blur(128px)', top: '-80px', left: '-80px', animation: 'pulse 3s ease-in-out infinite' }} />
+          <div style={{ position: 'absolute', width: '320px', height: '320px', background: '#2d6a9f', borderRadius: '50%', filter: 'blur(128px)', bottom: '40px', right: '40px', animation: 'pulse 3s ease-in-out infinite', animationDelay: '2s' }} />
         </div>
 
-        {/* Heading — Playfair Display */}
-        <h1 className="fade-in-up heading-display" style={{
-          fontSize: 'clamp(28px, 5vw, 52px)',
-          marginBottom: '16px',
-          lineHeight: '1.15',
-          maxWidth: '700px',
-          margin: '0 auto 16px',
-          color: 'white',
-        }}>
-          {lang === 'ar' ? 'ابحث عن عقارك المثالي في البحرين' : 'Find Your Perfect Property in Bahrain'}
-        </h1>
-
-        <p className="fade-in-up delay-1" style={{
-          fontSize: 'clamp(15px, 2.5vw, 18px)',
-          marginBottom: '40px',
-          opacity: 0.7,
-          maxWidth: '520px',
-          margin: '0 auto 40px',
-          lineHeight: '1.7',
-        }}>
-          {lang === 'ar' ? 'تصفح العقارات أو أضف طلبك ودع أصحاب العقارات يتواصلون معك' : 'Browse listings or post what you need and let owners come to you'}
-        </p>
-
-        {/* Search Box */}
-        <div className="fade-in-up delay-2" style={{
-          background: 'white',
-          borderRadius: '16px',
-          padding: '20px',
-          maxWidth: '880px',
-          margin: '0 auto',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.35)',
-        }}>
-          {/* Rent / Sale toggle */}
-          <div style={{ display: 'flex', marginBottom: '16px', background: '#f0f4f8', borderRadius: '10px', padding: '4px', gap: '4px' }}>
-            {['rent', 'sale'].map(type => (
-              <button key={type} onClick={() => setFilters({...filters, listing_type: type})} style={{
-                flex: 1, padding: '10px', border: 'none', borderRadius: '8px', cursor: 'pointer',
-                fontWeight: '600', fontSize: '14px', fontFamily: 'inherit',
-                background: filters.listing_type === type ? '#0f2640' : 'transparent',
-                color: filters.listing_type === type ? 'white' : '#718096',
-                transition: 'all 0.2s ease',
-                boxShadow: filters.listing_type === type ? '0 2px 8px rgba(15,38,64,0.3)' : 'none',
-              }}>{type === 'rent' ? (lang === 'ar' ? '🏠 للإيجار' : '🏠 For Rent') : (lang === 'ar' ? '🔑 للبيع' : '🔑 For Sale')}</button>
-            ))}
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '900px', margin: '0 auto' }}>
+          {/* Badge */}
+          <div className="fade-in" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(26,60,94,0.5)', border: '1px solid rgba(200,169,81,0.3)', borderRadius: '999px', padding: '6px 16px', marginBottom: '32px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#c8a951', boxShadow: '0 0 8px #c8a951', display: 'inline-block' }} />
+            <span style={{ color: '#c8a951', fontWeight: '700', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+              {lang === 'ar' ? 'المنصة العقارية الأولى في البحرين' : "Bahrain's #1 Real Estate Platform"}
+            </span>
           </div>
 
-          {/* Filters */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px', marginBottom: '14px' }}>
-            <input value={filters.search} onChange={e => setFilters({...filters, search: e.target.value})} onKeyDown={e => e.key === 'Enter' && handleSearch()} placeholder={lang === 'ar' ? 'ابحث...' : 'Search properties...'} style={selectStyle} />
-            <select value={filters.category} onChange={e => setFilters({...filters, category: e.target.value})} style={selectStyle}>
-              <option value="">{lang === 'ar' ? 'الفئة' : 'Category'}</option>
-              {categories.map(c => <option key={c.id} value={c.id}>{lang === 'ar' ? c.name_ar : c.name_en}</option>)}
-            </select>
-            <select value={filters.governorate} onChange={e => setFilters({...filters, governorate: e.target.value})} style={selectStyle}>
-              <option value="">{lang === 'ar' ? 'المحافظة' : 'Governorate'}</option>
-              {governorates.map(g => <option key={g.id} value={g.id}>{lang === 'ar' ? g.name_ar : g.name_en}</option>)}
-            </select>
-            <select value={filters.bedrooms} onChange={e => setFilters({...filters, bedrooms: e.target.value})} style={selectStyle}>
-              <option value="">{lang === 'ar' ? 'الغرف' : 'Bedrooms'}</option>
-              {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n}+</option>)}
-            </select>
-            <input type="number" value={filters.price_max} onChange={e => setFilters({...filters, price_max: e.target.value})} placeholder={lang === 'ar' ? 'أقصى سعر (BD)' : 'Max price (BD)'} style={selectStyle} />
+          {/* Heading — Playfair Display */}
+          <h1 className="fade-in-up heading-display" style={{
+            fontSize: 'clamp(32px, 6vw, 60px)',
+            marginBottom: '32px',
+            lineHeight: '1.15',
+            color: 'white',
+          }}>
+            {lang === 'ar' ? (
+              <>ابحث عن <span style={{ color: '#c8a951', fontStyle: 'italic' }}>منزل أحلامك</span> في المملكة</>
+            ) : (
+              <>Find Your Dream <span style={{ color: '#c8a951', fontStyle: 'italic' }}>Home</span><br className="hide-mobile" /> in the Kingdom</>
+            )}
+          </h1>
+
+          {/* Search Bento — glass card */}
+          <div className="fade-in-up delay-2" style={{
+            width: '100%',
+            maxWidth: '900px',
+            background: 'rgba(255,255,255,0.03)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(200,169,81,0.2)',
+            borderRadius: '10px',
+            padding: '24px',
+            boxShadow: '0 24px 64px rgba(0,0,0,0.35)',
+            boxSizing: 'border-box',
+          }}>
+            {/* Buy / Rent toggle */}
+            <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
+              {['sale', 'rent'].map(type => (
+                <button key={type} onClick={() => setFilters({ ...filters, listing_type: type })} style={{
+                  padding: '10px 24px', borderRadius: '6px', fontWeight: '700', fontSize: '14px',
+                  fontFamily: 'inherit', cursor: 'pointer', transition: 'all 0.2s ease',
+                  background: filters.listing_type === type ? '#c8a951' : 'transparent',
+                  color: filters.listing_type === type ? '#0f2640' : 'white',
+                  border: filters.listing_type === type ? 'none' : '1px solid rgba(255,255,255,0.2)',
+                }}>
+                  {type === 'sale' ? (lang === 'ar' ? 'شراء' : 'Buy') : (lang === 'ar' ? 'إيجار' : 'Rent')}
+                </button>
+              ))}
+            </div>
+
+            {/* Filters Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px', alignItems: 'end', textAlign: 'left' }}>
+              <div>
+                <label style={fieldLabelStyle}>{lang === 'ar' ? 'الفئة' : 'Category'}</label>
+                <select value={filters.category} onChange={e => setFilters({ ...filters, category: e.target.value })} style={fieldStyle}>
+                  <option value="">{lang === 'ar' ? 'كل الفئات' : 'All Categories'}</option>
+                  {categories.map(c => <option key={c.id} value={c.id}>{lang === 'ar' ? c.name_ar : c.name_en}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={fieldLabelStyle}>{lang === 'ar' ? 'المحافظة' : 'Governorate'}</label>
+                <select value={filters.governorate} onChange={e => setFilters({ ...filters, governorate: e.target.value })} style={fieldStyle}>
+                  <option value="">{lang === 'ar' ? 'كل المحافظات' : 'All Governorates'}</option>
+                  {governorates.map(g => <option key={g.id} value={g.id}>{lang === 'ar' ? g.name_ar : g.name_en}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={fieldLabelStyle}>{lang === 'ar' ? 'غرف النوم' : 'Bedrooms'}</label>
+                <select value={filters.bedrooms} onChange={e => setFilters({ ...filters, bedrooms: e.target.value })} style={fieldStyle}>
+                  <option value="">{lang === 'ar' ? 'أي عدد' : 'Any'}</option>
+                  {[1, 2, 3, 4].map(n => <option key={n} value={n}>{n}+ {lang === 'ar' ? 'غرف' : 'Beds'}</option>)}
+                </select>
+              </div>
+              <div>
+                <label style={fieldLabelStyle}>{lang === 'ar' ? 'أقصى سعر (د.ب)' : 'Max Price (BHD)'}</label>
+                <input type="number" value={filters.price_max} onChange={e => setFilters({ ...filters, price_max: e.target.value })} placeholder={lang === 'ar' ? 'بدون حد' : 'No Max'} style={fieldStyle} />
+              </div>
+              <button onClick={handleSearch} style={{
+                width: '100%', background: '#c8a951', color: '#0f2640', fontWeight: '700',
+                padding: '14px', borderRadius: '6px', border: 'none', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                fontSize: '14px', fontFamily: 'inherit', transition: 'all 0.2s ease',
+              }}
+                onMouseEnter={e => e.currentTarget.style.background = '#ddc06b'}
+                onMouseLeave={e => e.currentTarget.style.background = '#c8a951'}
+              >
+                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>search</span>
+                <span>{lang === 'ar' ? 'ابحث عن عقار' : 'Search Properties'}</span>
+              </button>
+            </div>
           </div>
-
-          <button onClick={handleSearch} className="btn-gold" style={{ width: '100%', padding: '14px', fontSize: '15px', borderRadius: '10px', fontWeight: '700', letterSpacing: '0.3px' }}>
-            🔍 {lang === 'ar' ? 'بحث عن العقارات' : 'Search Properties'}
-          </button>
         </div>
-
-        {/* Order CTA */}
-        <div className="fade-in-up delay-3" style={{ marginTop: '28px' }}>
-          <p style={{ opacity: 0.5, fontSize: '13px', marginBottom: '10px' }}>
-            {lang === 'ar' ? 'لا تجد ما تبحث عنه؟' : "Can't find what you're looking for?"}
-          </p>
-          <button onClick={() => navigate('/orders/create')} style={{
-            background: 'transparent', color: 'rgba(255,255,255,0.85)',
-            border: '1px solid rgba(255,255,255,0.25)',
-            padding: '10px 24px', borderRadius: '8px', cursor: 'pointer',
-            fontWeight: '600', fontSize: '14px', fontFamily: 'inherit',
-            transition: 'all 0.2s ease',
-          }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(200,169,81,0.4)'; e.currentTarget.style.color = '#c8a951'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'; e.currentTarget.style.color = 'rgba(255,255,255,0.85)'; }}
-          >
-            {lang === 'ar' ? '📋 أضف طلبك الآن' : '📋 Post Your Order'} →
-          </button>
-        </div>
-      </div>
+      </section>
 
       {/* ── Stats Strip ── */}
-      <div style={{ background: isDark ? '#0a1929' : '#0f2640', padding: '20px', borderBottom: '1px solid rgba(200,169,81,0.15)' }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '8px', textAlign: 'center' }}>
-          {[
-            { num: '4', suffix: '', label: lang === 'ar' ? 'محافظات' : 'Governorates' },
-            { num: '40', suffix: '+', label: lang === 'ar' ? 'منطقة' : 'Areas' },
-            { num: '3', suffix: '', label: lang === 'ar' ? 'فئات عقارية' : 'Property Types' },
-            { num: '100', suffix: '%', label: lang === 'ar' ? 'بحريني' : 'Bahrain Focused' },
-          ].map((s, i) => (
-            <div key={i} style={{ padding: '10px' }}>
-              <p style={{ fontSize: '24px', fontWeight: '800', margin: '0 0 2px', color: '#c8a951', fontFamily: "'Playfair Display', serif" }}>
-                <AnimatedCounter target={s.num} suffix={s.suffix} />
+      <section style={{ background: isDark ? '#0a1929' : 'white', padding: '48px 20px', borderBottom: `1px solid ${border}` }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px' }}>
+          {stats.map((s, i) => (
+            <div key={i} className="stat-item" style={{ textAlign: 'center', padding: '0 16px', borderLeft: i > 0 ? `1px solid ${border}` : 'none' }}>
+              <p className="heading-display stat-number" style={{ fontSize: '36px', color: heading, margin: '0 0 6px', transition: 'color 0.2s ease' }}>
+                {s.static ? `${s.num}${s.suffix}` : <AnimatedCounter target={s.num} suffix={s.suffix} />}
               </p>
-              <p style={{ margin: 0, color: 'rgba(255,255,255,0.55)', fontSize: '12px', fontWeight: '500', letterSpacing: '0.3px' }}>{s.label}</p>
+              <p style={{ margin: 0, color: subtext, fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1.5px' }}>{s.label}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* ── Features ── */}
-      <div style={{ padding: '72px 20px', background: isDark ? '#060e18' : '#f0f4f8' }}>
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <p style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '2px', color: '#c8a951', textTransform: 'uppercase', marginBottom: '12px' }}>
-            {lang === 'ar' ? 'لماذا تختارنا' : 'Why Choose Us'}
-          </p>
-          <h2 className="heading-display" style={{ fontSize: 'clamp(24px, 4vw, 36px)', color: heading, marginBottom: '12px' }}>
-            {lang === 'ar' ? 'المنصة العقارية الأذكى في البحرين' : 'The Smartest Way to Find Property'}
+      {/* ── Features: Sovereign Excellence ── */}
+      <section style={{ padding: '96px 20px', background: isDark ? '#060e18' : '#f0f4f8' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto 64px', textAlign: 'center' }}>
+          <h2 className="heading-display" style={{ fontSize: 'clamp(26px, 4vw, 36px)', color: heading, marginBottom: '16px' }}>
+            {lang === 'ar' ? 'التميز السيادي' : 'Sovereign Excellence'}
           </h2>
-          <p style={{ color: subtext, fontSize: '15px', maxWidth: '500px', margin: '0 auto' }}>
-            {lang === 'ar' ? 'نوفر لك تجربة عقارية استثنائية' : "We've reimagined real estate for Bahrain"}
+          <p style={{ color: subtext, maxWidth: '600px', margin: '0 auto', fontSize: '16px' }}>
+            {lang === 'ar'
+              ? 'اكتشف الركائز التي تجعل ملكي البوابة الأكثر موثوقية للاستثمار العقاري في البحرين.'
+              : 'Discover the pillars that make MulkiBH the most trusted gateway to real estate investments in Bahrain.'}
           </p>
         </div>
 
-        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
-          {[
-            {
-              icon: '🏠',
-              title: lang === 'ar' ? 'تصفح بذكاء' : 'Smart Browse',
-              desc: lang === 'ar' ? 'فلاتر متقدمة للبحث حسب الموقع، السعر، الغرف والمزيد' : 'Advanced filters by location, price, bedrooms and more',
-            },
-            {
-              icon: '📋',
-              title: lang === 'ar' ? 'اطلب ما تريد' : 'Post Your Request',
-              desc: lang === 'ar' ? 'أضف طلبك وسيتواصل معك أصحاب العقارات مباشرة' : 'Post what you need and let owners come directly to you',
-            },
-            {
-              icon: '🔔',
-              title: lang === 'ar' ? 'تنبيهات فورية' : 'Instant Alerts',
-              desc: lang === 'ar' ? 'احصل على إشعارات فورية عند الرد على طلباتك' : 'Get notified the moment someone responds to your requests',
-            },
-          ].map((f, i) => (
-            <div key={i} className={`feature-card fade-in-up delay-${i+1}`} style={{
+        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+          {features.map((f, i) => (
+            <div key={i} className={`feature-card fade-in-up delay-${i + 1}`} style={{
               background: isDark ? '#0a1929' : 'white',
-              padding: '32px 28px',
-              borderRadius: '16px',
-              border: `1px solid ${isDark ? '#1a3c5e' : '#e8edf2'}`,
+              padding: '32px',
+              borderTop: '4px solid #c8a951',
               boxShadow: isDark ? 'none' : 'var(--shadow-sm)',
-              position: 'relative',
-              overflow: 'hidden',
             }}>
-              {/* Gold accent line */}
-              <div style={{ position: 'absolute', top: 0, left: '28px', right: '28px', height: '3px', background: 'linear-gradient(to right, #c8a951, #ddc06b)', borderRadius: '0 0 3px 3px' }} />
-              <div style={{ fontSize: '36px', marginBottom: '16px' }}>{f.icon}</div>
-              <h3 style={{ color: heading, fontSize: '17px', fontWeight: '700', marginBottom: '10px' }}>{f.title}</h3>
-              <p style={{ color: subtext, lineHeight: '1.7', fontSize: '14px' }}>{f.desc}</p>
+              <div style={{ width: '48px', height: '48px', background: '#0f2640', color: '#c8a951', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', marginBottom: '24px' }}>
+                <span className="material-symbols-outlined" style={{ fontSize: '28px' }}>{f.icon}</span>
+              </div>
+              <h3 className="heading-display" style={{ color: heading, fontSize: '22px', marginBottom: '16px' }}>{f.title}</h3>
+              <p style={{ color: subtext, lineHeight: '1.7', fontSize: '15px' }}>{f.desc}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* ── Bottom CTA ── */}
-      <div style={{ background: isDark ? '#0a1929' : '#0f2640', padding: '64px 20px', textAlign: 'center' }}>
-        <h2 className="heading-display" style={{ fontSize: 'clamp(22px, 4vw, 36px)', color: 'white', marginBottom: '14px' }}>
-          {lang === 'ar' ? 'هل أنت صاحب عقار أو مكتب عقاري؟' : 'Are you a property owner or agency?'}
-        </h2>
-        <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '28px', fontSize: '15px', maxWidth: '480px', margin: '0 auto 28px' }}>
-          {lang === 'ar' ? 'انشر عقاراتك الآن واستقبل آلاف العملاء يومياً' : 'List your properties and reach thousands of potential tenants and buyers'}
-        </p>
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <button onClick={() => navigate('/register')} className="btn-gold" style={{ padding: '13px 28px', fontSize: '15px', borderRadius: '10px', boxShadow: '0 4px 16px rgba(200,169,81,0.4)' }}>
-            {lang === 'ar' ? 'ابدأ مجاناً' : 'Get Started Free'}
-          </button>
-          <button onClick={() => navigate('/properties')} style={{
-            background: 'rgba(255,255,255,0.08)', color: 'white', border: '1px solid rgba(255,255,255,0.2)',
-            padding: '13px 28px', borderRadius: '10px', cursor: 'pointer', fontSize: '15px', fontWeight: '600', fontFamily: 'inherit',
+      {/* ── CTA: Ready to List? ── */}
+      <section style={{ padding: '80px 20px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', background: '#0f2640', display: 'flex', flexWrap: 'wrap', boxShadow: '0 24px 64px rgba(0,0,0,0.25)', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ flex: '1 1 420px', padding: '56px 40px', position: 'relative', zIndex: 1 }}>
+            <h2 className="heading-display" style={{ fontSize: 'clamp(26px, 4vw, 36px)', color: 'white', marginBottom: '20px' }}>
+              {lang === 'ar' ? 'هل أنت مستعد للإدراج؟' : 'Ready to List?'}
+            </h2>
+            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '17px', lineHeight: '1.7', marginBottom: '36px', maxWidth: '440px' }}>
+              {lang === 'ar'
+                ? 'سواء كنت مالكاً أو وسيطاً، انضم إلى شبكة البحرين النخبوية واعرض عقارك أمام آلاف العملاء المؤهلين يومياً.'
+                : 'Whether you are an owner or a broker, join Bahrain’s elite network and showcase your property to thousands of qualified leads daily.'}
+            </p>
+            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+              <button onClick={() => navigate('/register')} className="btn-gold" style={{ padding: '14px 32px', borderRadius: '6px', fontSize: '15px' }}>
+                {lang === 'ar' ? 'أدرج عقارك' : 'List Your Property'}
+              </button>
+              <button onClick={() => window.location.href = 'mailto:info@mulkibh.com'} style={{
+                background: 'transparent', color: 'white', border: '1px solid rgba(255,255,255,0.3)',
+                padding: '14px 32px', borderRadius: '6px', cursor: 'pointer', fontWeight: '600', fontSize: '15px', fontFamily: 'inherit',
+              }}>
+                {lang === 'ar' ? 'تواصل مع وكيل' : 'Contact Agent'}
+              </button>
+            </div>
+          </div>
+          <div className="cta-image" style={{
+            flex: '1 1 380px', minHeight: '360px', position: 'relative',
+            backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuD3xNAYLcr-lKwgcgUE3PtoUvDsqNvdU2kB6lEM8CYNRC1C1kzVSfN8Ykq8mCbj4ecxzKg69yKKvk-ww4667CrfcaMjblLTSWrifi7dnsxjH0t7fad6GgjtZX1NRiHcLXslB6-5fze_4OipI8JBgeSNqe7dDVds5dzrIbKIg1dthwv5GKgrN4DTa74o1uUlwRnDjZpdTbBWSYBbsxfdft23UQ5zisnsgLPE8BtUNiAH7rJnDdAGKCwiPsm4x6nC3OYN9eTCcuvzYsE')",
+            backgroundSize: 'cover', backgroundPosition: 'center',
           }}>
-            {lang === 'ar' ? 'تصفح العقارات' : 'Browse Listings'}
-          </button>
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #0f2640, transparent)' }} />
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer style={{ background: isDark ? '#060e18' : '#0f2640', borderTop: '1px solid #1a3c5e' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '56px 20px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '48px' }}>
+          <div>
+            <div style={{ marginBottom: '20px' }}><Logo size="lg" dark /></div>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', lineHeight: '1.7' }}>
+              {lang === 'ar'
+                ? 'المعيار الأمثل للعقارات في مملكة البحرين. نربط المستثمرين المميزين بالعقارات السيادية.'
+                : 'The definitive standard for real estate in the Kingdom of Bahrain. Connecting discerning investors with sovereign properties.'}
+            </p>
+          </div>
+          <div>
+            <h4 style={{ color: 'white', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.15em', fontSize: '13px', marginBottom: '18px' }}>
+              {lang === 'ar' ? 'الشركة' : 'Company'}
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                lang === 'ar' ? 'من نحن' : 'About Us',
+                lang === 'ar' ? 'شروط الخدمة' : 'Terms of Service',
+                lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy',
+              ].map((l, i) => <a key={i} href="#" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color = '#ddc06b'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}>{l}</a>)}
+            </div>
+          </div>
+          <div>
+            <h4 style={{ color: 'white', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.15em', fontSize: '13px', marginBottom: '18px' }}>
+              {lang === 'ar' ? 'الموارد' : 'Resources'}
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {[
+                lang === 'ar' ? 'الدعم الفني' : 'Contact Support',
+                lang === 'ar' ? 'دليل العقارات في البحرين' : 'Bahrain Real Estate Guide',
+                lang === 'ar' ? 'تقارير السوق' : 'Market Reports',
+              ].map((l, i) => <a key={i} href="#" style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px', textDecoration: 'none' }} onMouseEnter={e => e.currentTarget.style.color = '#ddc06b'} onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}>{l}</a>)}
+            </div>
+          </div>
+          <div>
+            <h4 style={{ color: 'white', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.15em', fontSize: '13px', marginBottom: '18px' }}>
+              {lang === 'ar' ? 'ابق على اطلاع' : 'Stay Informed'}
+            </h4>
+            <div style={{ display: 'flex' }}>
+              <input type="email" placeholder={lang === 'ar' ? 'البريد الإلكتروني' : 'Email Address'} style={{
+                background: '#0f2640', border: '1px solid #1a3c5e', color: 'white', padding: '10px 12px',
+                flexGrow: 1, outline: 'none', fontSize: '13px', fontFamily: 'inherit', minWidth: 0,
+              }} />
+              <button style={{ background: '#c8a951', color: '#0f2640', border: 'none', padding: '10px 16px', fontWeight: '700', fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit', flexShrink: 0 }}>
+                {lang === 'ar' ? 'اشترك' : 'Join'}
+              </button>
+            </div>
+            <div style={{ display: 'flex', gap: '16px', marginTop: '20px' }}>
+              {['public', 'share', 'hub'].map(icon => (
+                <span key={icon} className="material-symbols-outlined" style={{ color: 'white', cursor: 'pointer' }} onMouseEnter={e => e.currentTarget.style.color = '#ddc06b'} onMouseLeave={e => e.currentTarget.style.color = 'white'}>{icon}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div style={{ borderTop: '1px solid rgba(26,60,94,0.5)', padding: '20px', textAlign: 'center' }}>
+          <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '13px', margin: 0 }}>
+            {lang === 'ar' ? '© 2026 ملكي. جميع الحقوق محفوظة. التميز العقاري السيادي.' : '© 2026 MulkiBH. All rights reserved. Sovereign Real Estate Excellence.'}
+          </p>
+        </div>
+      </footer>
+
+      <style>{`
+        .stat-item:hover .stat-number { color: #c8a951 !important; }
+        @media (max-width: 768px) {
+          .hide-mobile { display: none; }
+          .cta-image { min-height: 240px; order: -1; }
+        }
+      `}</style>
     </div>
   );
 };

@@ -3,64 +3,89 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFavorites } from '../context/FavoritesContext';
 import { useLang } from '../context/LanguageContext';
-import { useThemeColors } from '../hooks/useThemeColors';
-import { useT } from '../hooks/useTranslation';
 
 const FavoritesPage = () => {
-  const t = useT();
   const { lang } = useLang();
-  const { bg, surface, border, text, subtext, heading, isDark } = useThemeColors();
-  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const { favorites, toggleFavorite } = useFavorites();
   const navigate = useNavigate();
 
   return (
-    <div style={{ background: bg, minHeight: 'calc(100vh - 68px)' }}>
+    <div style={{ background: '#f6fafe', minHeight: 'calc(100vh - 68px)' }}>
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h1 className="heading-display" style={{ fontSize: 'clamp(28px,4vw,40px)', color: '#0f2640', marginBottom: '8px' }}>
+            {lang === 'ar' ? 'المفضلة' : 'My Favorites'}
+          </h1>
+          <p style={{ color: '#44474d' }}>
+            {lang === 'ar' ? `${favorites.length} عقاراً محفوظاً` : `${favorites.length} saved ${favorites.length === 1 ? 'property' : 'properties'}`}
+          </p>
+        </div>
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '28px 24px' }}>
         {favorites.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '80px 20px', background: surface, borderRadius: '16px', border: `1px solid ${isDark ? '#1a3c5e' : '#e8edf2'}` }}>
-            <div style={{ fontSize: '56px', marginBottom: '16px' }}>❤️</div>
-            <h3 style={{ color: heading, marginBottom: '8px', fontFamily: "'Playfair Display', serif", fontSize: '22px' }}>
-              {lang === 'ar' ? 'لا توجد عقارات محفوظة' : 'No saved properties yet'}
+          <div style={{ textAlign: 'center', padding: '100px 20px', background: 'white', border: '1px solid rgba(196,198,206,0.3)', borderRadius: '2px' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '52px', color: '#c8a951' }}>favorite</span>
+            <h3 className="heading-display" style={{ color: '#0f2640', margin: '16px 0 8px', fontSize: '24px' }}>
+              {lang === 'ar' ? 'لا توجد عقارات محفوظة بعد' : 'No saved properties yet'}
             </h3>
-            <p style={{ color: subtext, marginBottom: '24px', fontSize: '14px' }}>
-              {lang === 'ar' ? 'اضغط على ❤️ على أي عقار لحفظه هنا' : 'Click ❤️ on any property to save it here'}
+            <p style={{ color: '#74777e', marginBottom: '28px', fontSize: '15px' }}>
+              {lang === 'ar' ? 'اضغط على أيقونة القلب في أي عقار لحفظه هنا' : 'Tap the heart icon on any property to save it here'}
             </p>
-            <button onClick={() => navigate('/properties')} className="btn-navy" style={{ padding: '12px 28px', borderRadius: '10px', fontSize: '14px' }}>
-              {t('browseProperties')}
+            <button onClick={() => navigate('/properties')} style={{ padding: '13px 32px', background: '#c8a951', color: '#0f2640', fontWeight: '700', border: 'none', borderRadius: '2px', cursor: 'pointer', fontFamily: 'inherit', fontSize: '14px' }}
+              onMouseEnter={e => e.currentTarget.style.background = '#ddc06b'} onMouseLeave={e => e.currentTarget.style.background = '#c8a951'}
+            >
+              {lang === 'ar' ? 'تصفح العقارات' : 'Browse Properties'}
             </button>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))', gap: '20px' }}>
-            {favorites.map((p, i) => (
-              <div key={p.id} className={`property-card fade-in-up delay-${Math.min(i+1,5)}`} style={{ background: surface, borderRadius: '14px', overflow: 'hidden', border: `1px solid ${isDark ? '#1a3c5e' : '#e8edf2'}`, boxShadow: isDark ? 'none' : 'var(--shadow-sm)', position: 'relative' }}>
-                <button onClick={e => { e.stopPropagation(); toggleFavorite(p); }} style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(255,255,255,0.9)', border: 'none', borderRadius: '50%', width: '34px', height: '34px', cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', zIndex: 1 }}>
-                  {isFavorite(p.id) ? '❤️' : '🤍'}
-                </button>
-
-                <div onClick={() => navigate(`/properties/${p.id}`)} style={{ cursor: 'pointer' }}>
-                  <div style={{ height: '190px', background: isDark ? '#0a1929' : '#f0f4f8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '44px', overflow: 'hidden', position: 'relative' }}>
-                    {p.main_image ? <img src={p.main_image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span>🏠</span>}
-                    <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: p.listing_type === 'rent' ? '#0f2640' : '#7a5c10', color: 'white', fontSize: '10px', fontWeight: '700', padding: '4px 10px', borderRadius: '6px', letterSpacing: '0.5px' }}>
-                      {p.listing_type === 'rent' ? (lang === 'ar' ? 'إيجار' : 'FOR RENT') : (lang === 'ar' ? 'بيع' : 'FOR SALE')}
-                    </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '32px' }}>
+            {favorites.map((p, i) => {
+              const badge = p.is_featured ? (lang === 'ar' ? 'حصري' : 'Exclusive') : (p.listing_type === 'sale' ? (lang === 'ar' ? 'للبيع' : 'For Sale') : (lang === 'ar' ? 'للإيجار' : 'For Rent'));
+              const badgeGold = p.is_featured || p.listing_type === 'sale';
+              return (
+                <div key={p.id} className="property-card fade-in-up" style={{ background: 'white', borderRadius: '2px', border: '1px solid rgba(196,198,206,0.3)', overflow: 'hidden', boxShadow: '0 1px 3px rgba(15,38,64,0.06)' }}>
+                  <div onClick={() => navigate(`/properties/${p.id}`)} style={{ position: 'relative', height: '224px', overflow: 'hidden', cursor: 'pointer' }}>
+                    <div className="property-image" style={{
+                      width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.7s ease',
+                      background: p.main_image ? `url('${p.main_image}') center/cover` : 'linear-gradient(135deg, #0f2640, #1a3c5e)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '40px',
+                    }}>{!p.main_image && '🏠'}</div>
+                    <div style={{
+                      position: 'absolute', top: '14px', left: '14px', padding: '5px 12px', fontWeight: '700', fontSize: '11px',
+                      textTransform: 'uppercase', letterSpacing: '0.05em', boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                      background: badgeGold ? '#c8a951' : '#0f2640', color: badgeGold ? '#0f2640' : 'white',
+                    }}>{badge}</div>
+                    <button onClick={e => { e.stopPropagation(); toggleFavorite(p); }} style={{
+                      position: 'absolute', top: '14px', right: '14px', width: '38px', height: '38px', borderRadius: '50%',
+                      background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(6px)', border: 'none', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ba1a1a',
+                    }}>
+                      <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                    </button>
                   </div>
-                  <div style={{ padding: '14px 16px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '6px' }}>
-                      <h4 style={{ color: text, fontSize: '14px', fontWeight: '600', margin: 0, maxWidth: '170px', lineHeight: '1.3' }}>{lang === 'ar' ? p.title_ar : p.title_en}</h4>
-                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        <p style={{ color: '#c8a951', fontWeight: '700', fontSize: '15px', margin: 0 }}>{p.price}</p>
-                        <p style={{ color: subtext, fontSize: '10px', margin: 0 }}>BD</p>
-                      </div>
+                  <div onClick={() => navigate(`/properties/${p.id}`)} style={{ padding: '20px', cursor: 'pointer' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', color: '#c8a951', marginBottom: '6px', gap: '4px' }}>
+                      <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>location_on</span>
+                      <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '700' }}>{p.city_name}, {p.governorate_name}</span>
                     </div>
-                    <p style={{ color: subtext, fontSize: '12px', margin: 0 }}>📍 {p.city_name}, {p.governorate_name}</p>
+                    <h3 className="heading-display" style={{ color: '#0f2640', fontSize: '19px', marginBottom: '10px' }}>
+                      {lang === 'ar' ? p.title_ar : p.title_en}
+                    </h3>
+                    <p style={{ color: '#c8a951', fontWeight: '800', fontSize: '20px', marginBottom: '14px' }}>
+                      BHD {p.price}{p.listing_type === 'rent' && <span style={{ fontSize: '13px', fontWeight: '400', color: '#44474d' }}> /{lang === 'ar' ? 'شهرياً' : 'month'}</span>}
+                    </p>
+                    <div style={{ display: 'flex', gap: '16px', paddingTop: '14px', borderTop: '1px solid rgba(196,198,206,0.3)' }}>
+                      {p.bedrooms && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '600', color: '#44474d' }}><span className="material-symbols-outlined" style={{ fontSize: '18px' }}>bed</span>{p.bedrooms}</span>}
+                      {p.bathrooms && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '600', color: '#44474d' }}><span className="material-symbols-outlined" style={{ fontSize: '18px' }}>bathtub</span>{p.bathrooms}</span>}
+                      {p.area_sqm && <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', fontWeight: '600', color: '#44474d' }}><span className="material-symbols-outlined" style={{ fontSize: '18px' }}>straighten</span>{p.area_sqm}m²</span>}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
+      <style>{`.property-card:hover .property-image { transform: scale(1.05); }`}</style>
     </div>
   );
 };
