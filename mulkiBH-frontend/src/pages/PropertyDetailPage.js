@@ -5,7 +5,14 @@ import { getProperty, getProperties, updateProperty } from '../api/properties';
 import { useLang } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { useAuth } from '../context/AuthContext';
-import Logo from '../components/common/Logo';
+import Footer from '../components/layout/Footer';
+
+const Icon = ({ name, fill, size = 20, style = {} }) => (
+  <span className={`material-symbols-outlined ${fill ? 'ms-fill' : ''}`} style={{ fontSize: size, ...style }}>{name}</span>
+);
+
+const AMENITIES_EN = ['Private Parking', 'Smart Home System', 'Central AC', 'Security & CCTV', 'Built-in Kitchen', 'Maid\'s Room', 'Balcony / Terrace', 'High-Speed Internet Ready'];
+const AMENITIES_AR = ['موقف سيارات خاص', 'نظام منزل ذكي', 'تكييف مركزي', 'أمن وكاميرات مراقبة', 'مطبخ مجهز', 'غرفة خادمة', 'شرفة / تراس', 'جاهز للإنترنت عالي السرعة'];
 
 const PropertyDetailPage = () => {
   const { id } = useParams();
@@ -13,6 +20,7 @@ const PropertyDetailPage = () => {
   const { toggleFavorite, isFavorite } = useFavorites();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const ar = lang === 'ar';
 
   const [property, setProperty] = useState(null);
   const [similar, setSimilar] = useState([]);
@@ -55,8 +63,8 @@ const PropertyDetailPage = () => {
   };
 
   if (loading) return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '32px 40px' }}>
-      <div className="skeleton" style={{ height: '480px', borderRadius: '2px', marginBottom: '24px' }} />
+    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '32px clamp(20px,5vw,64px)' }}>
+      <div className="skeleton" style={{ height: '480px', borderRadius: 'var(--radius-lg)', marginBottom: '24px' }} />
       <div className="skeleton" style={{ height: '32px', width: '40%', marginBottom: '12px' }} />
       <div className="skeleton" style={{ height: '20px', width: '25%' }} />
     </div>
@@ -67,213 +75,277 @@ const PropertyDetailPage = () => {
   const isOwner = user && (user.id === property.owner_id || user.role === 'admin');
   const statusColors = { available: '#2e7d32', rented: '#2d6a9f', sold: '#ba1a1a', pending: '#a37c1a' };
   const fav = isFavorite(property.id);
-  const title = lang === 'ar' ? property.title_ar : property.title_en;
-  const description = lang === 'ar' ? property.description_ar : property.description_en;
+  const title = ar ? property.title_ar : property.title_en;
+  const description = ar ? property.description_ar : property.description_en;
+  const images = property.images || [];
+  const amenities = ar ? AMENITIES_AR : AMENITIES_EN;
 
-  const statStyle = { background: '#f0f4f8', padding: '16px', borderRadius: '2px', borderLeft: '3px solid #c8a951', display: 'flex', flexDirection: 'column', gap: '6px' };
+  const statCard = { background: 'var(--surface-low)', border: '1px solid rgba(196,198,206,0.4)', borderRadius: 'var(--radius-lg)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '8px' };
 
   return (
-    <div style={{ background: '#f6fafe', minHeight: 'calc(100vh - 68px)' }} className="fade-in">
-      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '32px 40px 60px' }}>
-        {/* Breadcrumbs */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', color: '#44474d', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          <span onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>{lang === 'ar' ? 'الرئيسية' : 'Home'}</span>
-          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>chevron_right</span>
-          <span onClick={() => navigate('/properties')} style={{ cursor: 'pointer' }}>{lang === 'ar' ? 'العقارات' : 'Properties'}</span>
-          <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>chevron_right</span>
-          <span style={{ color: '#c8a951' }}>{title}</span>
-        </nav>
+    <div style={{ background: 'var(--bg)', minHeight: 'calc(100vh - 72px)' }} className="fade-in">
+      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '32px clamp(20px,5vw,64px) 64px' }}>
 
-        <div className="detail-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', alignItems: 'start' }}>
-          {/* Left column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-            {/* Gallery */}
-            <section>
-              <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden', borderRadius: '2px', background: '#0f2640' }}>
-                {property.images?.length > 0 ? (
-                  <img src={property.images[activeImage]?.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'opacity 0.3s' }} />
-                ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', fontSize: '64px' }}>🏠</div>
-                )}
-                <div style={{ position: 'absolute', top: '16px', left: '16px', background: '#c8a951', color: '#0f2640', fontWeight: '700', padding: '6px 16px', borderRadius: '2px', fontSize: '13px', textTransform: 'uppercase' }}>
-                  {property.listing_type === 'rent' ? (lang === 'ar' ? 'للإيجار' : 'For Rent') : (lang === 'ar' ? 'للبيع' : 'For Sale')}
+        {/* ═══ GALLERY ═══ */}
+        <section style={{ marginBottom: '32px' }}>
+          {images.length >= 3 ? (
+            <div className="detail-gallery" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px', height: '520px' }}>
+              <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                <img src={images[0].image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{ position: 'absolute', top: '20px', left: '20px', display: 'flex', gap: '8px' }}>
+                  <span className="badge-pill" style={{ background: 'var(--gold-fixed)', color: 'var(--on-gold)' }}>
+                    {property.listing_type === 'rent' ? (ar ? 'للإيجار' : 'FOR RENT') : (ar ? 'للبيع' : 'FOR SALE')}
+                  </span>
+                  {property.is_featured && <span className="badge-pill" style={{ background: 'rgba(255,255,255,0.92)', color: 'var(--primary)' }}>{ar ? 'حصري' : 'EXCLUSIVE'}</span>}
                 </div>
-                <div style={{ position: 'absolute', bottom: '16px', right: '16px', background: 'rgba(15,38,64,0.8)', backdropFilter: 'blur(6px)', color: 'white', padding: '10px 24px', borderRadius: '2px' }} className="heading-display">
-                  BHD {property.price}{property.listing_type === 'rent' && <span style={{ fontSize: '13px' }}> /{lang === 'ar' ? 'شهر' : 'mo'}</span>}
-                </div>
-                <div style={{ position: 'absolute', top: '16px', right: '16px', display: 'flex', gap: '8px' }}>
-                  <button onClick={() => toggleFavorite(property)} style={{ width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(6px)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: fav ? '#ba1a1a' : 'white' }}>
-                    <span className="material-symbols-outlined" style={{ fontVariationSettings: fav ? "'FILL' 1" : "'FILL' 0" }}>favorite</span>
-                  </button>
+                <button onClick={() => toggleFavorite(property)} style={{ position: 'absolute', top: '20px', right: '20px', width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(6px)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: fav ? '#ba1a1a' : 'white' }}>
+                  <Icon name="favorite" fill={fav} />
+                </button>
+                <div style={{ position: 'absolute', bottom: '20px', right: '20px', background: 'rgba(0,17,37,0.75)', backdropFilter: 'blur(6px)', color: 'white', padding: '10px 22px', borderRadius: 'var(--radius)' }} className="heading-display">
+                  BHD {Number(property.price).toLocaleString()}{property.listing_type === 'rent' && <span style={{ fontSize: '13px' }}> /{ar ? 'شهر' : 'mo'}</span>}
                 </div>
               </div>
-              {property.images?.length > 1 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ flex: 1, borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                  <img src={images[1].image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
+                    <img src={images[2].image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                  <div style={{ position: 'relative', borderRadius: 'var(--radius-lg)', overflow: 'hidden', cursor: images.length > 3 ? 'pointer' : 'default' }} onClick={() => images.length > 3 && setActiveImage(3)}>
+                    <img src={(images[3] || images[2]).image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    {images.length > 4 && (
+                      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 700 }}>
+                        +{images.length - 4} {ar ? 'المزيد' : 'More'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', overflow: 'hidden', borderRadius: 'var(--radius-lg)', background: 'var(--primary)' }}>
+                {images.length > 0 ? (
+                  <img src={images[activeImage]?.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}><Icon name="villa" size={64} style={{ color: 'rgba(255,255,255,0.25)' }} /></div>
+                )}
+                <div style={{ position: 'absolute', top: '20px', left: '20px' }}>
+                  <span className="badge-pill" style={{ background: 'var(--gold-fixed)', color: 'var(--on-gold)' }}>
+                    {property.listing_type === 'rent' ? (ar ? 'للإيجار' : 'FOR RENT') : (ar ? 'للبيع' : 'FOR SALE')}
+                  </span>
+                </div>
+                <button onClick={() => toggleFavorite(property)} style={{ position: 'absolute', top: '20px', right: '20px', width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(6px)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: fav ? '#ba1a1a' : 'white' }}>
+                  <Icon name="favorite" fill={fav} />
+                </button>
+                <div style={{ position: 'absolute', bottom: '20px', right: '20px', background: 'rgba(0,17,37,0.75)', backdropFilter: 'blur(6px)', color: 'white', padding: '10px 22px', borderRadius: 'var(--radius)' }} className="heading-display">
+                  BHD {Number(property.price).toLocaleString()}{property.listing_type === 'rent' && <span style={{ fontSize: '13px' }}> /{ar ? 'شهر' : 'mo'}</span>}
+                </div>
+              </div>
+              {images.length > 1 && (
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px', marginTop: '12px' }}>
-                  {property.images.slice(0, 4).map((img, i) => (
-                    <div key={i} onClick={() => setActiveImage(i)} style={{
-                      position: 'relative', cursor: 'pointer', overflow: 'hidden', borderRadius: '2px', height: '90px',
-                      boxShadow: activeImage === i ? '0 0 0 2px #c8a951' : 'none',
-                    }}>
+                  {images.slice(0, 4).map((img, i) => (
+                    <div key={i} onClick={() => setActiveImage(i)} style={{ position: 'relative', cursor: 'pointer', overflow: 'hidden', borderRadius: 'var(--radius)', height: '90px', boxShadow: activeImage === i ? '0 0 0 2px var(--gold)' : 'none' }}>
                       <img src={img.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: activeImage === i ? 1 : 0.75 }} />
-                      {i === 3 && property.images.length > 4 && (
-                        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700' }}>
-                          +{property.images.length - 4}
-                        </div>
-                      )}
                     </div>
                   ))}
                 </div>
               )}
-            </section>
+            </div>
+          )}
+        </section>
 
-            {/* Header */}
-            <section style={{ borderBottom: '1px solid #dfe3e7', paddingBottom: '32px' }}>
-              <h1 className="heading-display" style={{ fontSize: 'clamp(28px,4vw,42px)', color: '#0f2640', marginBottom: '10px' }}>{title}</h1>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#44474d' }}>
-                <span className="material-symbols-outlined" style={{ color: '#c8a951' }}>location_on</span>
-                <span>{property.city?.name_en}, {property.governorate?.name_en}</span>
-                <span style={{ marginLeft: 'auto', fontSize: '13px', color: '#74777e', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>visibility</span>{property.views_count}
-                </span>
+        {/* ═══ TITLE / BREADCRUMB / PRICE ═══ */}
+        <section style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px', borderBottom: '1px solid rgba(196,198,206,0.3)', paddingBottom: '28px', marginBottom: '32px' }}>
+          <div>
+            <nav style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px', color: 'var(--outline)', fontSize: '13px' }}>
+              <span onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>{ar ? 'الرئيسية' : 'Home'}</span>
+              <span>/</span>
+              <span onClick={() => navigate(`/properties?governorate=${property.governorate?.id}`)} style={{ cursor: 'pointer' }}>{ar ? property.governorate?.name_ar : property.governorate?.name_en}</span>
+              <span>/</span>
+              <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{ar ? property.category?.name_ar : property.category?.name_en}</span>
+            </nav>
+            <h1 className="headline-xl" style={{ color: 'var(--primary)', fontSize: 'clamp(28px,4vw,42px)', marginBottom: '10px' }}>{title}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-variant)' }}>
+              <Icon name="location_on" size={19} style={{ color: 'var(--gold-text)' }} />
+              <span>{ar ? property.city?.name_ar : property.city?.name_en}, {ar ? property.governorate?.name_ar : property.governorate?.name_en}</span>
+            </div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <p className="label-md" style={{ color: 'var(--gold-text)', fontSize: '11px', marginBottom: '4px' }}>{ar ? 'سعر القائمة' : 'Listing Price'}</p>
+            <h2 className="headline-lg" style={{ color: 'var(--primary)' }}>
+              BHD {Number(property.price).toLocaleString()}{property.listing_type === 'rent' && <span style={{ fontSize: '15px', fontFamily: 'Inter', fontWeight: 500, color: 'var(--outline)' }}> /{ar ? 'شهر' : 'mo'}</span>}
+            </h2>
+          </div>
+        </section>
+
+        {/* ═══ STATS GRID ═══ */}
+        <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+          {[
+            property.bedrooms != null && { icon: 'bed', label: ar ? 'غرف النوم' : 'Bedrooms', value: property.bedrooms },
+            property.bathrooms != null && { icon: 'bathtub', label: ar ? 'الحمامات' : 'Bathrooms', value: property.bathrooms },
+            property.area_sqm && { icon: 'square_foot', label: ar ? 'المساحة الكلية' : 'Total Area', value: `${property.area_sqm} m²` },
+            property.floors && { icon: 'layers', label: ar ? 'الطوابق' : 'Floors', value: property.floors },
+          ].filter(Boolean).map((s, i) => (
+            <div key={i} style={statCard}>
+              <Icon name={s.icon} size={32} style={{ color: 'var(--primary)' }} />
+              <p className="headline-md" style={{ color: 'var(--primary)', margin: 0 }}>{s.value}</p>
+              <p className="label-md" style={{ color: 'var(--outline)', fontSize: '11px', margin: 0 }}>{s.label}</p>
+            </div>
+          ))}
+        </section>
+
+        {/* Owner status management */}
+        {isOwner && (
+          <section style={{ background: 'var(--surface-low)', border: '1px solid rgba(196,198,206,0.4)', padding: '20px', borderRadius: 'var(--radius-lg)', marginBottom: '32px' }}>
+            <p style={{ margin: '0 0 10px', fontWeight: 700, fontSize: '12px', color: 'var(--text-variant)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{ar ? 'تحديث الحالة' : 'Update Status'}</p>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {['available', 'rented', 'sold', 'pending'].map(s => (
+                <button key={s} onClick={() => handleStatusChange(s)} disabled={updatingStatus || property.status === s} style={{
+                  padding: '8px 16px', borderRadius: 'var(--radius)', border: 'none', cursor: property.status === s ? 'default' : 'pointer',
+                  background: property.status === s ? statusColors[s] : 'var(--surface-mid)', color: property.status === s ? 'white' : 'var(--text-variant)',
+                  fontSize: '12px', fontWeight: 700, textTransform: 'capitalize',
+                }}>{s}</button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ═══ CONTENT SPLIT ═══ */}
+        <div className="detail-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '40px', alignItems: 'start' }}>
+          {/* Left column */}
+          <div>
+            {description && (
+              <section style={{ marginBottom: '48px' }}>
+                <h2 className="headline-lg" style={{ color: 'var(--primary)', marginBottom: '16px' }}>{ar ? 'نظرة عامة على العقار' : 'Property Overview'}</h2>
+                <p style={{ color: 'var(--text-variant)', fontSize: '16px', lineHeight: 1.8 }}>{description}</p>
+              </section>
+            )}
+
+            {/* Amenities (illustrative — full checklist coming soon) */}
+            <section style={{ marginBottom: '48px' }}>
+              <h3 className="headline-md" style={{ color: 'var(--primary)', marginBottom: '18px' }}>{ar ? 'المرافق والمميزات' : 'Amenities & Features'}</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+                {amenities.map((a, i) => (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text)', fontSize: '14px' }}>
+                    <Icon name="check_circle" fill size={19} style={{ color: 'var(--gold-text)' }} /> {a}
+                  </div>
+                ))}
               </div>
             </section>
 
-            {/* Stats */}
-            <section style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '16px' }}>
-              {[
-                property.bedrooms != null && { icon: 'bed', label: lang === 'ar' ? 'غرف النوم' : 'Bedrooms', value: String(property.bedrooms).padStart(2, '0') },
-                property.bathrooms != null && { icon: 'bathtub', label: lang === 'ar' ? 'الحمامات' : 'Bathrooms', value: String(property.bathrooms).padStart(2, '0') },
-                property.area_sqm && { icon: 'square_foot', label: lang === 'ar' ? 'المساحة الكلية' : 'Total Area', value: `${property.area_sqm} m²` },
-                property.floors && { icon: 'layers', label: lang === 'ar' ? 'الطوابق' : 'Floors', value: String(property.floors).padStart(2, '0') },
-              ].filter(Boolean).map((s, i) => (
-                <div key={i} style={statStyle}>
-                  <span style={{ color: '#44474d', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{s.label}</span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span className="material-symbols-outlined" style={{ color: '#2d6a9f' }}>{s.icon}</span>
-                    <span className="heading-display" style={{ color: '#0f2640', fontSize: '20px' }}>{s.value}</span>
+            {/* Location (illustrative map — live map coming soon) */}
+            <section>
+              <h3 className="headline-md" style={{ color: 'var(--primary)', marginBottom: '18px' }}>{ar ? 'الموقع' : 'Location'}</h3>
+              <div style={{ width: '100%', height: '280px', background: 'var(--surface-mid)', borderRadius: 'var(--radius-lg)', border: '1px solid rgba(196,198,206,0.4)', position: 'relative', overflow: 'hidden', backgroundImage: 'linear-gradient(rgba(196,198,206,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(196,198,206,0.35) 1px, transparent 1px)', backgroundSize: '28px 28px' }}>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ background: 'var(--primary)', color: 'white', padding: '12px 20px', borderRadius: 'var(--radius)', boxShadow: '0 12px 30px rgba(0,17,37,0.3)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Icon name="location_on" fill size={20} style={{ color: 'var(--gold-fixed)' }} />
+                    <span style={{ fontWeight: 700, fontSize: '13px' }}>{ar ? property.city?.name_ar : property.city?.name_en}, {ar ? property.governorate?.name_ar : property.governorate?.name_en}</span>
                   </div>
                 </div>
-              ))}
+              </div>
             </section>
-
-            {/* Owner status management */}
-            {isOwner && (
-              <section style={{ background: '#f0f4f8', padding: '16px', borderRadius: '2px' }}>
-                <p style={{ margin: '0 0 10px', fontWeight: '700', fontSize: '12px', color: '#44474d', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{lang === 'ar' ? 'تحديث الحالة' : 'Update Status'}</p>
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {['available', 'rented', 'sold', 'pending'].map(s => (
-                    <button key={s} onClick={() => handleStatusChange(s)} disabled={updatingStatus || property.status === s} style={{
-                      padding: '7px 14px', borderRadius: '2px', border: 'none', cursor: property.status === s ? 'default' : 'pointer',
-                      background: property.status === s ? statusColors[s] : '#e4e9ed', color: property.status === s ? 'white' : '#44474d',
-                      fontSize: '12px', fontWeight: '700', textTransform: 'capitalize',
-                    }}>{s}</button>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {/* Description */}
-            {description && (
-              <section>
-                <h2 className="heading-display" style={{ fontSize: '26px', color: '#0f2640', marginBottom: '16px' }}>
-                  {lang === 'ar' ? 'نظرة عامة على العقار' : 'Property Overview'}
-                </h2>
-                <p style={{ color: '#44474d', fontSize: '16px', lineHeight: '1.8' }}>{description}</p>
-              </section>
-            )}
           </div>
 
-          {/* Right column: Sidebar */}
-          <aside style={{ position: 'sticky', top: '88px' }}>
-            <div style={{ background: 'linear-gradient(135deg, #0f2640 0%, #1a3c5e 100%)', color: 'white', padding: '32px', borderRadius: '2px', boxShadow: '0 20px 50px rgba(15,38,64,0.3)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
-                <div style={{ width: '56px', height: '56px', borderRadius: '50%', border: '2px solid #c8a951', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <span className="material-symbols-outlined" style={{ fontSize: '28px', color: '#c8a951' }}>person</span>
-                </div>
-                <div>
-                  <h3 className="heading-display" style={{ fontSize: '19px', marginBottom: '2px' }}>{property.owner_agency || property.owner_name}</h3>
-                  <p style={{ color: '#ddc06b', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
-                    {property.owner_agency ? property.owner_name : (lang === 'ar' ? 'جهة الاتصال' : 'Property Contact')}
-                  </p>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
-                {property.owner_phone && (
-                  <a href={`tel:${property.owner_phone}`} style={{ background: '#c8a951', color: '#0f2640', textDecoration: 'none', padding: '14px', borderRadius: '2px', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                    <span className="material-symbols-outlined">call</span>{lang === 'ar' ? 'اتصل الآن' : 'Call Now'}
-                  </a>
-                )}
-                {property.owner_whatsapp && (
-                  <a href={`https://wa.me/${property.owner_whatsapp}`} target="_blank" rel="noreferrer" style={{ border: '2px solid #c8a951', color: '#c8a951', textDecoration: 'none', padding: '13px', borderRadius: '2px', fontWeight: '700', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                    <span className="material-symbols-outlined">chat</span>{lang === 'ar' ? 'واتساب' : 'WhatsApp Messenger'}
-                  </a>
-                )}
-              </div>
-
-              {contactSent ? (
-                <div style={{ textAlign: 'center', padding: '16px', color: '#9be89b', background: 'rgba(46,125,50,0.15)', borderRadius: '2px', fontSize: '14px' }}>
-                  {lang === 'ar' ? 'تم فتح واتساب للتواصل!' : 'WhatsApp opened for contact!'}
-                </div>
-              ) : (
-                <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  <div>
-                    <label style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#ddc06b', display: 'block', marginBottom: '4px' }}>{lang === 'ar' ? 'اسمك' : 'Your Name'}</label>
-                    <input value={contactForm.name} onChange={e => setContactForm({ ...contactForm, name: e.target.value })} required placeholder={lang === 'ar' ? 'الاسم الكامل' : 'Full Name'} style={{ width: '100%', background: 'rgba(255,255,255,0.1)', border: 'none', borderBottom: '1px solid rgba(200,169,81,0.3)', color: 'white', padding: '8px 0', outline: 'none', boxSizing: 'border-box' }} />
+          {/* Right column: Contact card */}
+          <aside style={{ position: 'sticky', top: '92px' }}>
+            <div style={{ background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-cont) 100%)', color: 'white', padding: '32px', borderRadius: 'var(--radius-lg)', boxShadow: '0 20px 50px rgba(0,17,37,0.3)', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: '-48px', right: '-48px', width: '140px', height: '140px', background: 'rgba(200,169,81,0.2)', borderRadius: '50%', filter: 'blur(30px)' }} />
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+                  <div style={{ width: '56px', height: '56px', borderRadius: '50%', border: '2px solid var(--gold)', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon name="person" size={28} style={{ color: 'var(--gold)' }} />
                   </div>
                   <div>
-                    <label style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#ddc06b', display: 'block', marginBottom: '4px' }}>{lang === 'ar' ? 'الاستفسار' : 'Inquiry'}</label>
-                    <textarea value={contactForm.message} onChange={e => setContactForm({ ...contactForm, message: e.target.value })} required rows={3} placeholder={lang === 'ar' ? 'أنا مهتم بهذا العقار...' : 'I am interested in this property...'} style={{ width: '100%', background: 'rgba(255,255,255,0.1)', border: 'none', borderBottom: '1px solid rgba(200,169,81,0.3)', color: 'white', padding: '8px 0', outline: 'none', resize: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                    <h3 className="heading-display" style={{ fontSize: '19px', marginBottom: '2px' }}>{property.owner_agency || property.owner_name}</h3>
+                    <p style={{ color: 'var(--gold-fixed)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
+                      {property.owner_agency ? property.owner_name : (ar ? 'جهة الاتصال' : 'Property Contact')}
+                    </p>
                   </div>
-                  <button type="submit" style={{ width: '100%', background: 'white', color: '#0f2640', fontWeight: '700', padding: '13px', border: 'none', borderRadius: '2px', cursor: 'pointer', fontFamily: 'inherit' }}>
-                    {lang === 'ar' ? 'إرسال طلب آمن' : 'Send Secure Request'}
-                  </button>
-                </form>
-              )}
-              <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '11px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                {lang === 'ar' ? `رقم القائمة الرسمي #BH-${property.id}` : `Official Listing #BH-${property.id}`}
-              </p>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '28px' }}>
+                  {property.owner_phone && (
+                    <a href={`tel:${property.owner_phone}`} className="btn-gold" style={{ textDecoration: 'none', padding: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                      <Icon name="call" size={19} />{ar ? 'اتصل الآن' : 'Call Now'}
+                    </a>
+                  )}
+                  {property.owner_whatsapp && (
+                    <a href={`https://wa.me/${property.owner_whatsapp}`} target="_blank" rel="noreferrer" style={{ border: '2px solid var(--gold)', color: 'var(--gold)', textDecoration: 'none', padding: '12px', borderRadius: 'var(--radius)', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                      <Icon name="chat" size={19} />{ar ? 'واتساب' : 'WhatsApp Messenger'}
+                    </a>
+                  )}
+                </div>
+
+                {contactSent ? (
+                  <div style={{ textAlign: 'center', padding: '16px', color: '#9be89b', background: 'rgba(46,125,50,0.15)', borderRadius: 'var(--radius)', fontSize: '14px' }}>
+                    {ar ? 'تم فتح واتساب للتواصل!' : 'WhatsApp opened for contact!'}
+                  </div>
+                ) : (
+                  <form onSubmit={handleContactSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div>
+                      <label style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--gold-fixed)', display: 'block', marginBottom: '4px' }}>{ar ? 'اسمك' : 'Your Name'}</label>
+                      <input value={contactForm.name} onChange={e => setContactForm({ ...contactForm, name: e.target.value })} required placeholder={ar ? 'الاسم الكامل' : 'Full Name'} style={{ width: '100%', background: 'rgba(255,255,255,0.1)', border: 'none', borderBottom: '1px solid rgba(200,169,81,0.3)', color: 'white', padding: '8px 0', outline: 'none', boxSizing: 'border-box' }} />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--gold-fixed)', display: 'block', marginBottom: '4px' }}>{ar ? 'الاستفسار' : 'Inquiry'}</label>
+                      <textarea value={contactForm.message} onChange={e => setContactForm({ ...contactForm, message: e.target.value })} required rows={3} placeholder={ar ? 'أنا مهتم بهذا العقار...' : 'I am interested in this property...'} style={{ width: '100%', background: 'rgba(255,255,255,0.1)', border: 'none', borderBottom: '1px solid rgba(200,169,81,0.3)', color: 'white', padding: '8px 0', outline: 'none', resize: 'none', boxSizing: 'border-box', fontFamily: 'inherit' }} />
+                    </div>
+                    <button type="submit" style={{ width: '100%', background: 'white', color: 'var(--primary)', fontWeight: 700, padding: '13px', border: 'none', borderRadius: 'var(--radius)', cursor: 'pointer', fontFamily: 'inherit' }}>
+                      {ar ? 'إرسال طلب آمن' : 'Send Secure Request'}
+                    </button>
+                  </form>
+                )}
+                <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '11px', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  {ar ? `رقم القائمة الرسمي #BH-${property.id}` : `Official Listing #BH-${property.id}`}
+                </p>
+              </div>
+            </div>
+            <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'space-between', padding: '0 4px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--outline)' }}>
+                <Icon name="verified_user" size={16} />
+                <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>{ar ? 'إعلان موثق' : 'Verified Listing'}</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--outline)' }}>
+                <Icon name="visibility" size={16} />
+                <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>{property.views_count} {ar ? 'مشاهدة' : 'Views'}</span>
+              </div>
             </div>
           </aside>
         </div>
 
-        {/* Similar Properties */}
+        {/* ═══ SIMILAR PROPERTIES ═══ */}
         {similar.length > 0 && (
-          <section style={{ marginTop: '80px' }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', marginBottom: '40px' }}>
-              <div>
-                <span style={{ color: '#c8a951', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.2em', display: 'block', marginBottom: '8px' }}>
-                  {lang === 'ar' ? 'مجموعة مختارة' : 'Curated Collection'}
-                </span>
-                <h2 className="heading-display" style={{ fontSize: 'clamp(26px,4vw,36px)', color: '#0f2640' }}>
-                  {lang === 'ar' ? 'عقارات حصرية مشابهة' : 'Similar Exclusive Properties'}
-                </h2>
-              </div>
-              <a onClick={() => navigate('/properties')} style={{ color: '#2d6a9f', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', textDecoration: 'none' }}>
-                {lang === 'ar' ? 'عرض كل المحفظة' : 'View All Portfolio'}
-                <span className="material-symbols-outlined">arrow_forward</span>
+          <section style={{ marginTop: '80px', borderTop: '1px solid rgba(196,198,206,0.3)', paddingTop: '48px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-end', gap: '16px', marginBottom: '32px' }}>
+              <h2 className="headline-lg" style={{ color: 'var(--primary)' }}>{ar ? 'عقارات حصرية مشابهة' : 'Similar Exclusive Properties'}</h2>
+              <a onClick={() => navigate('/properties')} style={{ color: 'var(--gold-text)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', textDecoration: 'none' }}>
+                {ar ? 'عرض كل المحفظة' : 'View All Portfolio'}
+                <Icon name="arrow_forward" size={18} />
               </a>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
               {similar.map(p => (
-                <div key={p.id} className="similar-card" style={{ background: 'white', border: '1px solid #dfe3e7', overflow: 'hidden' }}>
-                  <div style={{ position: 'relative', overflow: 'hidden', aspectRatio: '4/3' }}>
-                    <div className="similar-image" style={{ width: '100%', height: '100%', backgroundSize: 'cover', backgroundPosition: 'center', transition: 'transform 0.5s ease', background: p.main_image ? `url('${p.main_image}') center/cover` : 'linear-gradient(135deg,#0f2640,#1a3c5e)' }} />
-                    {p.is_featured && <div style={{ position: 'absolute', top: '14px', right: '14px', background: '#0f2640', color: 'white', fontSize: '11px', fontWeight: '700', padding: '5px 12px' }}>{lang === 'ar' ? 'حصري' : 'EXCLUSIVE'}</div>}
+                <div key={p.id} className="property-card" style={{ overflow: 'hidden' }} onClick={() => { navigate(`/properties/${p.id}`); window.scrollTo(0, 0); }}>
+                  <div style={{ position: 'relative', height: '220px', overflow: 'hidden' }}>
+                    {p.main_image
+                      ? <img className="card-img" src={p.main_image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, var(--primary), var(--primary-cont))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Icon name="villa" size={44} style={{ color: 'rgba(255,255,255,0.25)' }} /></div>}
+                    <div style={{ position: 'absolute', bottom: '14px', left: '14px', background: 'rgba(0,17,37,0.75)', backdropFilter: 'blur(6px)', color: 'white', padding: '8px 16px', borderRadius: 'var(--radius)', fontSize: '13px', fontWeight: 700 }}>
+                      BHD {Number(p.price).toLocaleString()}
+                    </div>
                   </div>
-                  <div style={{ padding: '20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}>
-                      <h3 className="heading-display" style={{ color: '#0f2640', fontSize: '18px' }}>{lang === 'ar' ? p.title_ar : p.title_en}</h3>
-                      <span style={{ color: '#c8a951', fontWeight: '700', flexShrink: 0 }}>BHD {p.price}</span>
+                  <div style={{ padding: '18px' }}>
+                    <h4 className="headline-md" style={{ color: 'var(--primary)', fontSize: '17px', marginBottom: '4px' }}>{ar ? p.title_ar : p.title_en}</h4>
+                    <p style={{ color: 'var(--text-variant)', fontSize: '13px', marginBottom: '14px' }}>{p.city_name}, {p.governorate_name}</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '13px', borderTop: '1px solid rgba(196,198,206,0.25)', fontSize: '12px', color: 'var(--text-variant)' }}>
+                      {p.bedrooms != null && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Icon name="bed" size={16} style={{ color: 'var(--outline)' }} /> {p.bedrooms}</span>}
+                      {p.bathrooms != null && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Icon name="bathtub" size={16} style={{ color: 'var(--outline)' }} /> {p.bathrooms}</span>}
+                      {p.area_sqm && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Icon name="square_foot" size={16} style={{ color: 'var(--outline)' }} /> {p.area_sqm} m²</span>}
                     </div>
-                    <div style={{ display: 'flex', gap: '14px', color: '#44474d', fontSize: '13px', marginBottom: '20px' }}>
-                      {p.bedrooms && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><span className="material-symbols-outlined" style={{ fontSize: '16px' }}>bed</span>{p.bedrooms}</span>}
-                      {p.bathrooms && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><span className="material-symbols-outlined" style={{ fontSize: '16px' }}>bathtub</span>{p.bathrooms}</span>}
-                      {p.area_sqm && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><span className="material-symbols-outlined" style={{ fontSize: '16px' }}>square_foot</span>{p.area_sqm}m²</span>}
-                    </div>
-                    <button onClick={() => { navigate(`/properties/${p.id}`); window.scrollTo(0, 0); }} className="similar-details-btn" style={{ width: '100%', padding: '11px', border: '1px solid #0f2640', background: 'transparent', color: '#0f2640', fontWeight: '700', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer', transition: 'all 0.2s ease' }}>
-                      {lang === 'ar' ? 'التفاصيل' : 'Details'}
-                    </button>
                   </div>
                 </div>
               ))}
@@ -282,50 +354,12 @@ const PropertyDetailPage = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <footer style={{ background: '#0f2640', padding: '48px 40px' }}>
-        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '32px' }}>
-          <div>
-            <Logo size="md" dark />
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: '1.8', marginTop: '16px' }}>
-              {lang === 'ar' ? 'التميز العقاري السيادي. تنسيق أرقى المحافظ في المملكة.' : "Sovereign Real Estate Excellence. Curating the Kingdom's most prestigious portfolios."}
-            </p>
-          </div>
-          <div>
-            <h4 style={{ color: '#c8a951', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '13px', marginBottom: '16px' }}>{lang === 'ar' ? 'وصول سريع' : 'Quick Access'}</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {[lang === 'ar' ? 'من نحن' : 'About Us', lang === 'ar' ? 'دليل العقارات' : 'Bahrain Real Estate Guide', lang === 'ar' ? 'تقارير السوق' : 'Market Reports'].map((l, i) => (
-                <a key={i} href="#" onClick={e => e.preventDefault()} style={{ color: 'rgba(255,255,255,0.65)', fontSize: '13px', textDecoration: 'underline', textUnderlineOffset: '4px' }}>{l}</a>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 style={{ color: '#c8a951', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '13px', marginBottom: '16px' }}>{lang === 'ar' ? 'قانوني' : 'Legal'}</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {[lang === 'ar' ? 'شروط الخدمة' : 'Terms of Service', lang === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy'].map((l, i) => (
-                <a key={i} href="#" onClick={e => e.preventDefault()} style={{ color: 'rgba(255,255,255,0.65)', fontSize: '13px', textDecoration: 'underline', textUnderlineOffset: '4px' }}>{l}</a>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 style={{ color: '#c8a951', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em', fontSize: '13px', marginBottom: '16px' }}>{lang === 'ar' ? 'الدعم' : 'Support'}</h4>
-            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '13px', marginBottom: '12px' }}>{lang === 'ar' ? 'خدمة كونسيرج على مدار الساعة للعملاء المؤسسيين' : '24/7 Concierge Service for Institutional Clients'}</p>
-            <a href="#" onClick={e => e.preventDefault()} style={{ color: 'rgba(255,255,255,0.85)', fontWeight: '700', borderBottom: '1px solid #c8a951', paddingBottom: '2px', textDecoration: 'none' }}>{lang === 'ar' ? 'تواصل مع الدعم' : 'Contact Support'}</a>
-          </div>
-        </div>
-        <div style={{ maxWidth: '1280px', margin: '32px auto 0', paddingTop: '24px', borderTop: '1px solid #1a3c5e', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', gap: '12px' }}>
-          <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '13px' }}>{lang === 'ar' ? '© 2026 ملكي. جميع الحقوق محفوظة.' : '© 2026 MulkiBH. All rights reserved. Sovereign Real Estate Excellence.'}</p>
-          <div style={{ display: 'flex', gap: '20px' }}>
-            {['public', 'share', 'mail'].map(icon => <span key={icon} className="material-symbols-outlined" style={{ color: '#c8a951', cursor: 'pointer' }}>{icon}</span>)}
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       <style>{`
-        .similar-card:hover .similar-image { transform: scale(1.1); }
-        .similar-card:hover .similar-details-btn { background: #0f2640; color: white; }
         @media (max-width: 900px) {
           .detail-grid { grid-template-columns: 1fr !important; }
+          .detail-gallery { grid-template-columns: 1fr !important; height: auto !important; }
         }
       `}</style>
     </div>

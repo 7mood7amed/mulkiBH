@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
-import { ThemeProvider } from './context/ThemeContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import Navbar from './components/layout/Navbar';
 import ProgressBar from './components/common/ProgressBar';
@@ -37,7 +36,7 @@ const ProtectedRoute = ({ children, roles }) => {
 
 const AppRoutes = () => {
   const location = useLocation();
-  const hideShell = location.pathname === '/login';
+  const hideShell = location.pathname === '/login' || location.pathname === '/register';
   return (
   <>
     <ProgressBar />
@@ -74,15 +73,13 @@ const AppRoutes = () => {
 function App() {
   return (
     <BrowserRouter>
-      <ThemeProvider>
-        <LanguageProvider>
-          <AuthProvider>
-            <FavoritesProvider>
-              <AppRoutes />
-            </FavoritesProvider>
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <FavoritesProvider>
+            <AppRoutes />
+          </FavoritesProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
