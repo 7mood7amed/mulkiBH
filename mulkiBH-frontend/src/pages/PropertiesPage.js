@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { getProperties, getCategories, getGovernorates, getCities } from '../api/properties';
 import { useLang } from '../context/LanguageContext';
-import { useThemeColors } from '../hooks/useThemeColors';
+// import { useThemeColors } from '../hooks/useThemeColors';
 import { useFavorites } from '../context/FavoritesContext';
 import Footer from '../components/layout/Footer';
 
