@@ -43,7 +43,7 @@ const RegisterPage = () => {
   const roles = [
     { value: 'visitor', icon: 'person', label: ar ? 'زائر' : 'Visitor' },
     { value: 'owner', icon: 'real_estate_agent', label: ar ? 'مالك' : 'Owner' },
-    { value: 'agency', icon: 'business', label: ar ? 'وكالة' : 'Agency' },
+    { value: 'agency', icon: 'business', label: ar ? 'مكتب' : 'Agency' },
   ];
 
   return (
