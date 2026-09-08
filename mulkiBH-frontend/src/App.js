@@ -8,6 +8,8 @@ import ProgressBar from './components/common/ProgressBar';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import PropertiesPage from './pages/PropertiesPage';
 import PropertyDetailPage from './pages/PropertyDetailPage';
 import CreatePropertyPage from './pages/CreatePropertyPage';
@@ -36,7 +38,8 @@ const ProtectedRoute = ({ children, roles }) => {
 
 const AppRoutes = () => {
   const location = useLocation();
-  const hideShell = location.pathname === '/login' || location.pathname === '/register';
+  const hideShell = location.pathname === '/login' || location.pathname === '/register'
+    || location.pathname === '/forgot-password' || location.pathname.startsWith('/reset-password/');
   return (
   <>
     <ProgressBar />
@@ -45,6 +48,8 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password/:uid/:token" element={<ResetPasswordPage />} />
       <Route path="/properties" element={<PropertiesPage />} />
       <Route path="/properties/:id" element={<PropertyDetailPage />} />
       <Route path="/properties/create" element={

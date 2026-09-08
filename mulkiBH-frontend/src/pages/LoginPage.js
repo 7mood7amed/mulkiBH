@@ -94,6 +94,16 @@ const LoginPage = () => {
                   <Icon name={showPw ? 'visibility_off' : 'visibility'} size={19} />
                 </button>
               </div>
+              <div style={{ textAlign: 'right', marginTop: '12px' }}>
+                <Link to="/forgot-password" style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '6px',
+                  padding: '7px 14px', borderRadius: '999px',
+                  border: '1px solid rgba(200,169,81,0.35)', background: 'rgba(200,169,81,0.08)',
+                  color: 'var(--gold-fixed)', fontSize: '12px', fontWeight: 600,
+                }}>
+                  <Icon name="key" size={14} /> {ar ? 'نسيت كلمة المرور؟' : 'Forgot password?'}
+                </Link>
+              </div>
             </div>
 
             <button type="submit" disabled={loading} className="btn-gold" style={{ width: '100%', padding: '15px', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
