@@ -1,0 +1,25 @@
+# Render Blueprint: Django API on the free plan.
+# The database is NOT created here: use a free Neon Postgres and paste its
+# connection string into DATABASE_URL in the Render dashboard.
+services:
+  - type: web
+    name: mulkibh-api
+    runtime: python
+    plan: free
+    rootDir: mulkiBH-backend
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: bash start.sh
+    healthCheckPath: /api/properties/categories/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_URL
+        value: https://mulkibh-frontend.onrender.com
+      - key: SEED_TEST_PROPERTIES
+        value: "50"
