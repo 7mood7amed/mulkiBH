@@ -62,6 +62,15 @@ WSGI_APPLICATION = 'mulkibh.wsgi.application'
 # Database — supports both local MySQL and Railway PostgreSQL
 DATABASE_URL = config('DATABASE_URL', default=None)
 
+# On Render (which sets RENDER=true) the MySQL localhost fallback below can never work,
+# so fail with a clear message instead of a confusing connection traceback.
+if not DATABASE_URL and config('RENDER', default=False, cast=bool):
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured(
+        'DATABASE_URL is not set. In the Render dashboard open this service > '
+        'Environment and set DATABASE_URL to your Postgres connection string.'
+    )
+
 if DATABASE_URL:
     # Production — Railway PostgreSQL
     DATABASES = {
