@@ -45,7 +45,6 @@ const Footer = () => {
             <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <li><Link to="/dashboard" style={linkStyle} onMouseEnter={e => { e.currentTarget.style.color = '#ffe08d'; e.currentTarget.style.transform = 'translateX(4px)'; }} onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; e.currentTarget.style.transform = 'none'; }}>{ar ? 'لوحة التحكم' : 'Dashboard'}</Link></li>
               <li><Link to="/favorites" style={linkStyle} onMouseEnter={e => { e.currentTarget.style.color = '#ffe08d'; e.currentTarget.style.transform = 'translateX(4px)'; }} onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; e.currentTarget.style.transform = 'none'; }}>{ar ? 'المفضلة' : 'Favorites'}</Link></li>
-              <li><Link to="/subscriptions" style={linkStyle} onMouseEnter={e => { e.currentTarget.style.color = '#ffe08d'; e.currentTarget.style.transform = 'translateX(4px)'; }} onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.75)'; e.currentTarget.style.transform = 'none'; }}>{ar ? 'خطط الاشتراك' : 'Subscription Plans'}</Link></li>
             </ul>
           </div>
 

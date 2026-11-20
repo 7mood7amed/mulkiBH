@@ -19,7 +19,6 @@ import OrderDetailPage from './pages/OrderDetailPage';
 import CreateOrderPage from './pages/CreateOrderPage';
 import NotificationsPage from './pages/NotificationsPage';
 import DashboardPage from './pages/DashboardPage';
-import SubscriptionsPage from './pages/SubscriptionsPage';
 import ProfilePage from './pages/ProfilePage';
 import FavoritesPage from './pages/FavoritesPage';
 
@@ -66,8 +65,6 @@ const AppRoutes = () => {
       <Route path="/orders/:id" element={<ProtectedRoute><OrderDetailPage /></ProtectedRoute>} />
       <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-      <Route path="/subscriptions" element={<ProtectedRoute><SubscriptionsPage /></ProtectedRoute>} />
-      <Route path="/subscriptions/verify" element={<ProtectedRoute><SubscriptionsPage /></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       <Route path="/favorites" element={<FavoritesPage />} />
     </Routes>

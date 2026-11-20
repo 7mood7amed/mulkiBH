@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import { useFavorites } from '../context/FavoritesContext';
 import { getUnreadCount } from '../api/notifications';
-import { getCurrentSubscription } from '../api/subscriptions';
 import { getMyProperties } from '../api/properties';
 import { getMyOrders } from '../api/orders';
 
@@ -22,7 +21,6 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const ar = lang === 'ar';
   const [unread, setUnread] = useState(0);
-  const [subscription, setSubscription] = useState(null);
   const [properties, setProperties] = useState([]);
   const [orderCount, setOrderCount] = useState(0);
 
@@ -30,7 +28,6 @@ const DashboardPage = () => {
     if (!user) { navigate('/login'); return; }
     getUnreadCount().then(r => setUnread(r.data.unread_count)).catch(() => {});
     if (user.role !== 'visitor') {
-      getCurrentSubscription().then(r => setSubscription(r.data)).catch(() => {});
       getMyProperties().then(r => setProperties(r.data)).catch(() => {});
     } else {
       getMyOrders().then(r => setOrderCount(r.data.length)).catch(() => {});
@@ -52,7 +49,6 @@ const DashboardPage = () => {
 
   const smallCards = [
     { icon: 'notifications_active', title: ar ? 'الإشعارات' : 'Notifications', desc: ar ? 'ابقَ مطلعاً على تحركات السوق والتنبيهات.' : 'Stay updated on market movements and alerts.', path: '/notifications', badge: unread },
-    ...(!isVisitor ? [{ icon: 'workspace_premium', dark: true, title: ar ? 'الاشتراك' : 'Subscription', desc: subscription?.plan_name ? (ar ? `خطتك الحالية: ${subscription.plan_name}` : `Current plan: ${subscription.plan_name}`) : (ar ? 'إدارة مزايا وفوترة العضوية المميزة.' : 'Manage your Premium Tier membership benefits and billing.'), path: '/subscriptions' }] : []),
     { icon: 'person', title: ar ? 'الملف الشخصي' : 'Profile', desc: ar ? 'تحديث بيانات الهوية وإعدادات الأمان.' : 'Update your identification and security settings.', path: '/profile' },
   ];
 
@@ -66,7 +62,7 @@ const DashboardPage = () => {
             <div>
               <div className="badge-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--gold-fixed)', color: 'var(--on-gold)', marginBottom: '18px' }}>
                 <span className="material-symbols-outlined ms-fill" style={{ fontSize: '14px' }}>workspace_premium</span>
-                {isVisitor ? (ar ? 'زائر' : 'Visitor') : (subscription?.plan_name || (ar ? 'مالك' : (user.role === 'agency' ? 'Agency' : 'Owner')))}
+                {isVisitor ? (ar ? 'زائر' : 'Visitor') : (ar ? 'مالك' : (user.role === 'agency' ? 'Agency' : 'Owner'))}
               </div>
               <h1 className="headline-xl" style={{ fontSize: 'clamp(26px,4vw,42px)', color: 'white', marginBottom: '10px' }}>
                 {ar ? `مرحباً بعودتك، ${user.full_name}` : `Welcome back, ${user.full_name}`}

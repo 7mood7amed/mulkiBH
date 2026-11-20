@@ -142,10 +142,6 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='MulkiBH <no-reply@mulkibh.com>')
 
-# Tap Payments
-TAP_SECRET_KEY = config('TAP_SECRET_KEY', default='')
-TAP_PUBLIC_KEY = config('TAP_PUBLIC_KEY', default='')
-
 # URLs
 FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:3000')
 BACKEND_URL = config('BACKEND_URL', default='http://127.0.0.1:8000')

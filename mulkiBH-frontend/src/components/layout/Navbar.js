@@ -118,7 +118,6 @@ const Navbar = () => {
                       { icon: 'person', label: lang === 'ar' ? 'الملف الشخصي' : 'Profile', path: '/profile' },
                       ...(user.role !== 'visitor' ? [{ icon: 'home_work', label: lang === 'ar' ? 'عقاراتي' : 'My Properties', path: '/my-properties' }] : []),
                       { icon: 'list_alt', label: lang === 'ar' ? 'طلباتي' : 'My Orders', path: '/orders' },
-                      ...(user.role !== 'visitor' ? [{ icon: 'workspace_premium', label: lang === 'ar' ? 'الاشتراك' : 'Subscription', path: '/subscriptions' }] : []),
                     ].map(item => (
                       <button key={item.path} onClick={() => navigate(item.path)} style={{
                         width: '100%', padding: '11px 16px', background: 'transparent', border: 'none',
