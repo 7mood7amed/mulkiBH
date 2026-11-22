@@ -11,8 +11,6 @@ const Icon = ({ name, fill, size = 20, style = {} }) => (
   <span className={`material-symbols-outlined ${fill ? 'ms-fill' : ''}`} style={{ fontSize: size, ...style }}>{name}</span>
 );
 
-const AMENITIES_EN = ['Private Parking', 'Smart Home System', 'Central AC', 'Security & CCTV', 'Built-in Kitchen', 'Maid\'s Room', 'Balcony / Terrace', 'High-Speed Internet Ready'];
-const AMENITIES_AR = ['موقف سيارات خاص', 'نظام منزل ذكي', 'تكييف مركزي', 'أمن وكاميرات مراقبة', 'مطبخ مجهز', 'غرفة خادمة', 'شرفة / تراس', 'جاهز للإنترنت عالي السرعة'];
 
 const PropertyDetailPage = () => {
   const { id } = useParams();
@@ -78,7 +76,6 @@ const PropertyDetailPage = () => {
   const title = ar ? property.title_ar : property.title_en;
   const description = ar ? property.description_ar : property.description_en;
   const images = property.images || [];
-  const amenities = ar ? AMENITIES_AR : AMENITIES_EN;
 
   const statCard = { background: 'var(--surface-low)', border: '1px solid rgba(196,198,206,0.4)', borderRadius: 'var(--radius-lg)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '8px' };
 
@@ -224,17 +221,7 @@ const PropertyDetailPage = () => {
               </section>
             )}
 
-            {/* Amenities (illustrative — full checklist coming soon) */}
-            <section style={{ marginBottom: '48px' }}>
-              <h3 className="headline-md" style={{ color: 'var(--primary)', marginBottom: '18px' }}>{ar ? 'المرافق والمميزات' : 'Amenities & Features'}</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
-                {amenities.map((a, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text)', fontSize: '14px' }}>
-                    <Icon name="check_circle" fill size={19} style={{ color: 'var(--gold-text)' }} /> {a}
-                  </div>
-                ))}
-              </div>
-            </section>
+            {/* Amenities hidden until per-listing amenity data exists */}
 
             {/* Location (illustrative map — live map coming soon) */}
             <section>
