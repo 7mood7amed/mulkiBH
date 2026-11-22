@@ -26,6 +26,7 @@ def send_notification_to_owners(order):
             user=owner,
             type='order',
             channel='dashboard',
+            order=order,
             title_en=title_en,
             title_ar=title_ar,
             message_en=message_en,
@@ -36,7 +37,7 @@ def send_notification_to_owners(order):
     Notification.objects.bulk_create(notifications)
 
 
-def send_notification(user, type, title_en, title_ar, message_en, message_ar, channel='dashboard'):
+def send_notification(user, type, title_en, title_ar, message_en, message_ar, channel='dashboard', order=None):
     """
     Send a single notification to a specific user.
     """
@@ -48,4 +49,5 @@ def send_notification(user, type, title_en, title_ar, message_en, message_ar, ch
         title_ar=title_ar,
         message_en=message_en,
         message_ar=message_ar,
+        order=order,
     )

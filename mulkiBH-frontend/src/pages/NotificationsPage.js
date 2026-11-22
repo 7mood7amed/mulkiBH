@@ -25,6 +25,10 @@ const NotificationsPage = () => {
   }, []);
 
   const handleMarkRead = async (id) => { await markRead(id); setNotifications(notifications.map(n => n.id === id ? { ...n, is_read: true } : n)); };
+  const handleOpen = async (n) => {
+    if (!n.is_read) { try { await handleMarkRead(n.id); } catch (e) {} }
+    if (n.order) navigate(`/orders/${n.order}`);
+  };
   const handleMarkAll = async () => { await markAllRead(); setNotifications(notifications.map(n => ({ ...n, is_read: true }))); };
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
@@ -65,11 +69,11 @@ const NotificationsPage = () => {
             {notifications.map((n) => {
               const config = typeConfig[n.type] || typeConfig.system;
               return (
-                <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)}
+                <div key={n.id} onClick={() => handleOpen(n)}
                   className="fade-in-up"
                   style={{
                     background: 'white', padding: '20px', border: '1px solid rgba(196,198,206,0.4)',
-                    boxShadow: '0 1px 3px rgba(15,38,64,0.06)', cursor: n.is_read ? 'default' : 'pointer',
+                    boxShadow: '0 1px 3px rgba(15,38,64,0.06)', cursor: (n.is_read && !n.order) ? 'default' : 'pointer',
                     borderLeft: `4px solid ${n.is_read ? 'rgba(196,198,206,0.4)' : config.color}`,
                     opacity: n.is_read ? 0.7 : 1, transition: 'opacity 0.2s',
                   }}>

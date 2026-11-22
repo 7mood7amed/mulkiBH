@@ -77,7 +77,8 @@ class OrderResponseView(APIView):
                 title_ar=f'رد جديد على طلبك #{order.id}',
                 message_en=f'{responder_name} has responded to your property order. Contact: {user.phone or user.whatsapp}',
                 message_ar=f'قام {responder_name} بالرد على طلب العقار الخاص بك. للتواصل: {user.phone or user.whatsapp}',
-                channel='dashboard'
+                channel='dashboard',
+                order=order,
             )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
