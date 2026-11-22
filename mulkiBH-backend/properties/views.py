@@ -54,7 +54,7 @@ class PropertyListView(generics.ListAPIView):
         if params.get('price_max'):
             queryset = queryset.filter(price__lte=params['price_max'])
         if params.get('bedrooms'):
-            queryset = queryset.filter(bedrooms=params['bedrooms'])
+            queryset = queryset.filter(bedrooms__gte=params['bedrooms'])
         if params.get('search'):
             from django.db.models import Q
             queryset = queryset.filter(
