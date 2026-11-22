@@ -44,7 +44,11 @@ class PropertyListView(generics.ListAPIView):
         if params.get('listing_type'):
             queryset = queryset.filter(listing_type=params['listing_type'])
         if params.get('category'):
-            queryset = queryset.filter(category_id=params['category'])
+            from django.db.models import Q
+            # Selecting a parent group (e.g. Land) also matches its subcategories.
+            queryset = queryset.filter(
+                Q(category_id=params['category']) | Q(category__parent_id=params['category'])
+            )
         if params.get('governorate'):
             queryset = queryset.filter(governorate_id=params['governorate'])
         if params.get('city'):
